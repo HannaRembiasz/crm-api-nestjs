@@ -1,0 +1,114 @@
+// use prisma-next
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      UserRole
+
+  tasks Task[]
+  deals Deal[]
+
+  createdAt TimestamptzString @default(now())
+  updatedAt temporal.updatedAtString()
+}
+
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String?
+  phone       String?
+  website     String?
+  address     String?
+  city        String?
+  postalCode  String?
+  country     String?
+  notes       String?
+
+  contacts    Contact[]
+  tasks Task[]
+  deals Deal[]
+
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+model Contact {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  jobTitle    String?
+  notes       String?
+
+  companyId   Int
+  company     Company  @relation(fields: [companyId], references: [id])
+
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  status      TaskStatus @default(TODO)
+  priority    TaskPriority @default(MEDIUM)
+  dueDate     TimestamptzString?
+
+  companyId   Int?
+  company     Company?  @relation(fields: [companyId], references: [id])
+
+  assignedToId Int
+  assignedTo   User     @relation(fields: [assignedToId], references: [id])
+
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}
+
+enum DealStatus {
+  LEAD
+  CONTACTED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+model Deal {
+  id           Int         @id @default(autoincrement())
+  title        String
+  value        Decimal?
+  status       DealStatus
+
+  companyId    Int
+  company      Company     @relation(fields: [companyId], references: [id])
+
+  assignedToId Int
+  assignedTo   User        @relation(fields: [assignedToId], references: [id])
+
+  createdAt    TimestamptzString @default(now())
+  updatedAt    temporal.updatedAtString()
+}
+
