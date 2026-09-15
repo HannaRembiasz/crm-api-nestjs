@@ -47,6 +47,10 @@ export class TasksService {
     return this.prisma.client.orm.public.Task.first({ id: id });
   }
 
+  getTaskCompany(id: number) {
+    return this.prisma.client.orm.public.Task.where({ id: id }).include('company').first();
+  }
+
   createTask(dto: CreateTaskDto) {
     return this.prisma.client.orm.public.Task.create(dto);
   }

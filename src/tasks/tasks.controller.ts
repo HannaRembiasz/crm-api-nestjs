@@ -18,6 +18,11 @@ getTaskById(@Param('id') id: number) {
     return this.tasksService.getTaskById(id);
 }
 
+@Get(':id/company')
+getTaskCompany(@Param('id') id: number) {
+    return this.tasksService.getTaskCompany(id);
+}
+
 @Post()
 createTask(@Body() dto: CreateTaskDto) {
     return this.tasksService.createTask(dto);
