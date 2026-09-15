@@ -30,6 +30,10 @@ export class DealsService {
         return this.prisma.client.orm.public.Deal.first({ id: id });
     }
 
+    getDealCompany(id: number) {
+        return this.prisma.client.orm.public.Deal.where({ id: id }).include('company').first();
+    }
+
     createDeal(dto: CreateDealDto) {
         return this.prisma.client.orm.public.Deal.create(dto);
     }

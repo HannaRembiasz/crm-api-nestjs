@@ -48,6 +48,10 @@ export class CompaniesService {
     return this.prisma.client.orm.public.Company.where({ id: id }).include('tasks').first();
   }
 
+  getCompanyDeals(id: number) {
+    return this.prisma.client.orm.public.Company.where({ id: id }).include('deals').first();
+  }
+
   updateCompany(id: number, dto: UpdateCompanyDto) {
     return this.prisma.client.orm.public.Company.where({ id: id }).update(dto);
   }

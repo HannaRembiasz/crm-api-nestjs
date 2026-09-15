@@ -28,6 +28,11 @@ export class CompaniesController {
     return this.companiesService.getCompanyTasks(Number(id));
   }
 
+  @Get(':id/deals')
+  getCompanyDeals(@Param('id') id: string) {
+    return this.companiesService.getCompanyDeals(Number(id));
+  }
+
   @Post()
   createCompany(@Body() dto: CreateCompanyDto) {
     return this.companiesService.createCompany(dto);
