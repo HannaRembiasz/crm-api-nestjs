@@ -1,15 +1,16 @@
-import { Controller, Get, Param, Post, Body, Patch, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch, Delete, Query } from '@nestjs/common';
 import { CreateDealDto } from './dto/create-deal.dto.js';
 import { UpdateDealDto } from './dto/update-deal.dto.js';
 import { DealsService } from './deals.service.js';
+import { DealQueryDto } from './dto/deal-query.dto.js';
 
 @Controller('deals')
 export class DealsController {
     constructor(private readonly dealsService: DealsService) {}
 
     @Get()
-    getAllDeals() {
-        return this.dealsService.getAllDeals();
+    getAllDeals(@Query() query: DealQueryDto) {
+        return this.dealsService.getAllDeals(query);
     }
 
     @Get(':id')

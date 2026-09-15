@@ -2,13 +2,28 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateDealDto } from './dto/create-deal.dto.js';
 import { UpdateDealDto } from './dto/update-deal.dto.js';
+import { DealQueryDto } from './dto/deal-query.dto.js';
 
 @Injectable()
 export class DealsService {
     constructor(private readonly prisma: PrismaService) {}
 
-    getAllDeals() {
-        return this.prisma.client.orm.public.Deal.all();
+    getAllDeals(query: DealQueryDto) {
+        let deals = this.prisma.client.orm.public.Deal;
+
+        if (query.title) {
+            deals = deals.where((deal) => deal.title.ilike(`%${query.title}%`));
+        }
+        if (query.status) {
+            deals = deals.where({ status: query.status });
+        }
+        if (query.companyId) {
+            deals = deals.where({ companyId: query.companyId });
+        }
+        if (query.assignedToId) {
+            deals = deals.where({ assignedToId: query.assignedToId });
+        }
+        return deals.all();
     }
 
     getDealById(id: number) {
