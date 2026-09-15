@@ -5,9 +5,10 @@ import { CompaniesModule } from './companies/companies.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { ContactsModule } from './contacts/contacts.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
+import { DealsModule } from './deals/deals.module.js';
 
 @Module({
-  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule],
+  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule],
   controllers: [AppController],
   providers: [AppService],
 })
