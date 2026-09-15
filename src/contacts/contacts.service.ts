@@ -36,6 +36,10 @@ export class ContactsService {
     });
   }
 
+  getContactCompany(id: number) {
+    return this.prisma.client.orm.public.Contact.where({ id: id }).include('company').first();
+  }
+
   createContact(dto: CreateContactDto) {
     return this.prisma.client.orm.public.Contact.create(dto);
   }

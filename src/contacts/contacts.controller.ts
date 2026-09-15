@@ -18,6 +18,11 @@ export class ContactsController {
     return this.contactsService.getContactById(Number(id));
   }
 
+  @Get(':id/company')
+  getContactCompany(@Param('id') id: string) {
+    return this.contactsService.getContactCompany(Number(id));
+  }
+
   @Post()
   createContact(@Body() dto: CreateContactDto) {
     return this.contactsService.createContact(dto);
