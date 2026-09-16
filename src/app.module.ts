@@ -7,9 +7,10 @@ import { ContactsModule } from './contacts/contacts.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { DealsModule } from './deals/deals.module.js';
 import { UsersModule } from './users/users.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
-  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule, UsersModule],
+  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule, UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
