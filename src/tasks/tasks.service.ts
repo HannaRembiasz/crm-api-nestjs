@@ -64,6 +64,16 @@ export class TasksService {
     return task;
   }
 
+  async getTaskUser(id: number) {
+    const task = await this.prisma.client.orm.public.Task.where({ id: id }).include('assignedTo').first();
+
+    if (!task) {
+      throw new NotFoundException(`Task not found`);
+    }
+
+    return task;
+  }
+
   async createTask(dto: CreateTaskDto) {
     return this.prisma.client.orm.public.Task.create(dto);
   }

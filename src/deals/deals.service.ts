@@ -49,6 +49,18 @@ export class DealsService {
     return deal;
   }
 
+  async getDealUser(id: number) {
+    const deal = await this.prisma.client.orm.public.Deal.where({ id: id })
+      .include('assignedTo')
+      .first();
+
+    if (!deal) {
+      throw new NotFoundException(`Deal not found`);
+    }
+
+    return deal;
+  }
+
   async createDeal(dto: CreateDealDto) {
     return this.prisma.client.orm.public.Deal.create(dto);
   }

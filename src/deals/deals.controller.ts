@@ -23,6 +23,11 @@ export class DealsController {
         return this.dealsService.getDealCompany(id);
     }
 
+    @Get(':id/user')
+    getDealUser(@Param('id') id: number) {
+        return this.dealsService.getDealUser(id);
+    }
+
     @Post()
     createDeal(@Body() dto: CreateDealDto) {
         return this.dealsService.createDeal(dto);
