@@ -1,4 +1,4 @@
-import { Controller, Query, Get, Post, Body, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Query, Get, Post, Body, Param, Patch, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { CompaniesService } from './companies.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
@@ -44,6 +44,7 @@ export class CompaniesController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteCompany(@Param('id') id: string) {
     return this.companiesService.deleteCompany(Number(id));
   }

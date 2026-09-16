@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch, Delete, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { CreateDealDto } from './dto/create-deal.dto.js';
 import { UpdateDealDto } from './dto/update-deal.dto.js';
 import { DealsService } from './deals.service.js';
@@ -34,6 +34,7 @@ export class DealsController {
     }
 
     @Delete(':id')
+    @HttpCode(HttpStatus.NO_CONTENT)
     deleteDeal(@Param('id') id: number) {
         return this.dealsService.deleteDeal(id);
     }

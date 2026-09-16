@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateContactDto } from './dto/create-contact.dto.js';
 import { UpdateContactDto } from './dto/update-contact.dto.js';
@@ -8,7 +8,7 @@ import { ContactQueryDto } from './dto/contact-query.dto.js';
 export class ContactsService {
   constructor(private prisma: PrismaService) {}
 
-  getAllContacts(query: ContactQueryDto) {
+  async getAllContacts(query: ContactQueryDto) {
     let contacts = this.prisma.client.orm.public.Contact;
 
     if (query.firstName) {
@@ -30,25 +30,57 @@ export class ContactsService {
     return contacts.all();
   }
 
-  getContactById(id: number) {
-    return this.prisma.client.orm.public.Contact.first({
+  async getContactById(id: number) {
+    const contact = await this.prisma.client.orm.public.Contact.first({
       id: id,
     });
+
+    if (!contact) {
+      throw new NotFoundException(`Contact not found`);
+    }
+
+    return contact;
   }
 
-  getContactCompany(id: number) {
-    return this.prisma.client.orm.public.Contact.where({ id: id }).include('company').first();
+  async getContactCompany(id: number) {
+    const contact = await this.prisma.client.orm.public.Contact.where({
+      id: id,
+    })
+      .include('company')
+      .first();
+
+    if (!contact) {
+      throw new NotFoundException(`Contact not found`);
+    }
+
+    return contact;
   }
 
-  createContact(dto: CreateContactDto) {
+  async createContact(dto: CreateContactDto) {
     return this.prisma.client.orm.public.Contact.create(dto);
   }
 
-  updateContact(id: number, dto: UpdateContactDto) {
-    return this.prisma.client.orm.public.Contact.where({ id: id }).update(dto);
+  async updateContact(id: number, dto: UpdateContactDto) {
+    const contact = await this.prisma.client.orm.public.Contact.where({
+      id: id,
+    }).update(dto);
+
+    if (!contact) {
+      throw new NotFoundException(`Contact not found`);
+    }
+
+    return contact;
   }
 
-  deleteContact(id: number) {
-    return this.prisma.client.orm.public.Contact.where({ id: id }).delete();
+  async deleteContact(id: number) {
+    const contact = await this.prisma.client.orm.public.Contact.where({
+      id: id,
+    }).delete();
+
+    if (!contact) {
+      throw new NotFoundException(`Contact not found`);
+    }
+
+    return;
   }
 }

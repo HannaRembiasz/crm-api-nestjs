@@ -1,4 +1,15 @@
-import { Controller, Get, Param, Post, Body, Patch, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  Body,
+  Patch,
+  Delete,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
 import { TaskQueryDto } from './dto/task-query.dto.js';
@@ -6,37 +17,36 @@ import { TasksService } from './tasks.service.js';
 
 @Controller('tasks')
 export class TasksController {
-constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) {}
 
-@Get()
-getAllTasks(@Query() query: TaskQueryDto) {
+  @Get()
+  getAllTasks(@Query() query: TaskQueryDto) {
     return this.tasksService.getAllTasks(query);
-}
+  }
 
-@Get(':id')
-getTaskById(@Param('id') id: number) {
+  @Get(':id')
+  getTaskById(@Param('id') id: number) {
     return this.tasksService.getTaskById(id);
-}
+  }
 
-@Get(':id/company')
-getTaskCompany(@Param('id') id: number) {
+  @Get(':id/company')
+  getTaskCompany(@Param('id') id: number) {
     return this.tasksService.getTaskCompany(id);
-}
+  }
 
-@Post()
-createTask(@Body() dto: CreateTaskDto) {
+  @Post()
+  createTask(@Body() dto: CreateTaskDto) {
     return this.tasksService.createTask(dto);
-}
+  }
 
-@Patch(':id')
-updateTask(@Param('id') id: number, @Body() dto: UpdateTaskDto) {
+  @Patch(':id')
+  updateTask(@Param('id') id: number, @Body() dto: UpdateTaskDto) {
     return this.tasksService.updateTask(id, dto);
-}
+  }
 
-@Delete(':id')
-deleteTask(@Param('id') id: number) {
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  deleteTask(@Param('id') id: number) {
     return this.tasksService.deleteTask(id);
+  }
 }
-
-}
-    

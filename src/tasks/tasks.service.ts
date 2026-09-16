@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
 import { TaskQueryDto } from './dto/task-query.dto.js';
@@ -8,7 +9,7 @@ import { TaskQueryDto } from './dto/task-query.dto.js';
 export class TasksService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAllTasks(query: TaskQueryDto) {
+  async getAllTasks(query: TaskQueryDto) {
     let tasks = this.prisma.client.orm.public.Task;
     if (query.title) {
       tasks = tasks.where((task) => task.title.ilike(`%${query.title}%`));
@@ -43,23 +44,47 @@ export class TasksService {
     return tasks.all();
   }
 
-  getTaskById(id: number) {
-    return this.prisma.client.orm.public.Task.first({ id: id });
+  async getTaskById(id: number) {
+    const task = await this.prisma.client.orm.public.Task.first({ id: id });
+
+    if (!task) {
+      throw new NotFoundException(`Task not found`);
+    }
+
+    return task;
   }
 
-  getTaskCompany(id: number) {
-    return this.prisma.client.orm.public.Task.where({ id: id }).include('company').first();
+  async getTaskCompany(id: number) {
+    const task = await this.prisma.client.orm.public.Task.where({ id: id }).include('company').first();
+
+    if (!task) {
+      throw new NotFoundException(`Task not found`);
+    }
+
+    return task;
   }
 
-  createTask(dto: CreateTaskDto) {
+  async createTask(dto: CreateTaskDto) {
     return this.prisma.client.orm.public.Task.create(dto);
   }
 
-  updateTask(id: number, dto: UpdateTaskDto) {
-    return this.prisma.client.orm.public.Task.where({ id: id }).update(dto);
+  async updateTask(id: number, dto: UpdateTaskDto) {
+    const task = await this.prisma.client.orm.public.Task.where({ id: id }).update(dto);
+
+    if (!task) {
+      throw new NotFoundException(`Task not found`);
+    }
+
+    return task;
   }
 
-  deleteTask(id: number) {
-    return this.prisma.client.orm.public.Task.where({ id: id }).delete();
+  async deleteTask(id: number) {
+    const task = await this.prisma.client.orm.public.Task.where({ id: id }).delete();
+
+    if (!task) {
+      throw new NotFoundException(`Task not found`);
+    }
+
+    return;
   }
 }

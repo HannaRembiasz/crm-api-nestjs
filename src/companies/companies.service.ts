@@ -1,14 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
 import { CompanyQueryDto } from './dto/company-query.dto.js';
 
+
 @Injectable()
 export class CompaniesService {
   constructor(private prisma: PrismaService) {}
 
-  getAllCompanies(query: CompanyQueryDto) {
+  async getAllCompanies(query: CompanyQueryDto) {
     let companies = this.prisma.client.orm.public.Company;
 
     if (query.name) {
@@ -32,31 +33,85 @@ export class CompaniesService {
     return companies.all();
   }
 
-  createCompany(dto: CreateCompanyDto) {
+  async createCompany(dto: CreateCompanyDto) {
     return this.prisma.client.orm.public.Company.create(dto);
   }
 
-  getCompanyById(id: number) {
-    return this.prisma.client.orm.public.Company.first({ id: id });
+  async getCompanyById(id: number) {
+    const company = await this.prisma.client.orm.public.Company.first({
+      id: id,
+    });
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return company;
   }
 
-  getCompanyContacts(id: number) {
-    return this.prisma.client.orm.public.Company.where({ id: id }).include('contacts').first();
+  async getCompanyContacts(id: number) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id: id,
+    })
+      .include('contacts')
+      .first();
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return company;
   }
 
-  getCompanyTasks(id: number) {
-    return this.prisma.client.orm.public.Company.where({ id: id }).include('tasks').first();
+  async getCompanyTasks(id: number) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id: id,
+    })
+      .include('tasks')
+      .first();
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return company;
   }
 
-  getCompanyDeals(id: number) {
-    return this.prisma.client.orm.public.Company.where({ id: id }).include('deals').first();
+  async getCompanyDeals(id: number) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id: id,
+    })
+      .include('deals')
+      .first();
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return company;
   }
 
-  updateCompany(id: number, dto: UpdateCompanyDto) {
-    return this.prisma.client.orm.public.Company.where({ id: id }).update(dto);
+  async updateCompany(id: number, dto: UpdateCompanyDto) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id: id,
+    }).update(dto);
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return company;
   }
 
-  deleteCompany(id: number) {
-    return this.prisma.client.orm.public.Company.where({ id: id }).delete();
+  async deleteCompany(id: number) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id: id,
+    }).delete();
+
+    if (!company) {
+      throw new NotFoundException(`Company not found`);
+    }
+
+    return;
   }
 }
