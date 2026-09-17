@@ -1,10 +1,5 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  Request,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, Request, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { Public } from './public.decorator.js';
 import type { AuthenticatedRequest } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
@@ -28,7 +23,19 @@ export class AuthController {
 
   @Public()
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const { access_token, refresh_token } = await this.authService.login(dto);
+
+    response.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
+
+    return { access_token };
   }
 }

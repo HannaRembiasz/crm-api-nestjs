@@ -15,6 +15,7 @@ model User {
 
   tasks Task[]
   deals Deal[]
+  authSessions AuthSession[]
 
   createdAt TimestamptzString @default(now())
   updatedAt temporal.updatedAtString()
@@ -112,3 +113,30 @@ model Deal {
   updatedAt    temporal.updatedAtString()
 }
 
+model AuthSession {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt   TimestamptzString @default(now())
+  expiresAt   TimestamptzString
+  revokedAt   TimestamptzString?
+  
+  refreshTokens RefreshToken[]
+
+  @@index([userId])
+}
+
+model RefreshToken {
+  id          Int      @id @default(autoincrement())
+  sessionId   Int
+  session     AuthSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  tokenHash   String   @unique
+
+  createdAt   TimestamptzString @default(now())
+  expiresAt   TimestamptzString
+  usedAt      TimestamptzString?
+
+  @@index([sessionId])
+}
