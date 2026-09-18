@@ -10,9 +10,11 @@ import {
   Query,
   Param,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { CreateUserDto, UserRole } from './dto/create-user.dto.js';
+import type { AuthenticatedRequest } from '../auth/auth.guard.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserQueryDto } from './dto/user.query.dto.js';
 import { UsersService } from './users.service.js';
@@ -33,13 +35,13 @@ export class UsersController {
   }
 
   @Get(':id/deals')
-  getUserDeals(@Param('id') id: number) {
-    return this.usersService.getUserDeals(id);
+  getUserDeals(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+    return this.usersService.getUserDeals(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/tasks')
-  getUserTasks(@Param('id') id: number) {
-    return this.usersService.getUserTasks(id);
+  getUserTasks(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+    return this.usersService.getUserTasks(id, request.user.sub, request.user.role);
   }
 
   @Roles(UserRole.ADMIN)

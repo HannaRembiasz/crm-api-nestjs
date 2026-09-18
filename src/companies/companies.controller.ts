@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -18,6 +19,7 @@ import { CompaniesService } from './companies.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
 import { CompanyQueryDto } from './dto/company-query.dto.js';
+import type { AuthenticatedRequest } from '../auth/auth.guard.js';
 
 @Controller('companies')
 export class CompaniesController {
@@ -39,13 +41,13 @@ export class CompaniesController {
   }
 
   @Get(':id/tasks')
-  getCompanyTasks(@Param('id') id: string) {
-    return this.companiesService.getCompanyTasks(Number(id));
+  getCompanyTasks(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
+    return this.companiesService.getCompanyTasks(Number(id), request.user.sub, request.user.role);
   }
 
   @Get(':id/deals')
-  getCompanyDeals(@Param('id') id: string) {
-    return this.companiesService.getCompanyDeals(Number(id));
+  getCompanyDeals(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
+    return this.companiesService.getCompanyDeals(Number(id), request.user.sub, request.user.role);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)

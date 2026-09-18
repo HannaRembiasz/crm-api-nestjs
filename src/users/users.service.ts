@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
+import { CreateUserDto, UserRole } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserQueryDto } from './dto/user.query.dto.js';
 
@@ -38,7 +43,7 @@ export class UsersService {
     return user;
   }
 
-  async getUserDeals(id: number) {
+  async getUserDeals(id: number, userId: number, userRole: UserRole) {
     const user = await this.prisma.client.orm.public.User.where({ id: id })
       .include('deals')
       .first();
@@ -47,10 +52,18 @@ export class UsersService {
       throw new NotFoundException(`User not found`);
     }
 
-    return user;
+    if (userRole === UserRole.EMPLOYEE && id !== userId) {
+      throw new ForbiddenException(`You cannot access another user\'s deals`);
+    }
+
+    const deals = this.prisma.client.orm.public.Deal.where({
+      assignedToId: id,
+    }).all();
+
+    return deals;
   }
 
-  async getUserTasks(id: number) {
+  async getUserTasks(id: number, userId: number, userRole: UserRole) {
     const user = await this.prisma.client.orm.public.User.where({ id: id })
       .include('tasks')
       .first();
@@ -59,11 +72,28 @@ export class UsersService {
       throw new NotFoundException(`User not found`);
     }
 
-    return user;
+    if (userRole === UserRole.EMPLOYEE && id !== userId) {
+      throw new ForbiddenException(`You cannot access another user\'s tasks`);
+    }
+
+    const tasks = this.prisma.client.orm.public.Task.where({
+      assignedToId: id,
+    });
+
+    return tasks.all();
   }
 
   async createUser(dto: CreateUserDto) {
-    return this.prisma.client.orm.public.User.create(dto);
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+    const newUser = await this.prisma.client.orm.public.User.create({
+      ...dto,
+      password: hashedPassword,
+    });
+
+    const { password, ...safeUser } = newUser;
+
+    return safeUser;
   }
 
   async updateUser(id: number, dto: UpdateUserDto) {

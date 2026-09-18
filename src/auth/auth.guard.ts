@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import type { UserRole } from '../users/dto/create-user.dto.js';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
@@ -14,7 +15,7 @@ export interface AuthenticatedRequest extends Request {
     sub: number;
     sid: number;
     email: string;
-    role: string;
+    role: UserRole;
     iat: number;
     exp: number;
   };

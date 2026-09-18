@@ -27,6 +27,7 @@ export class CreateDealDto {
     companyId: number;
 
     @IsInt()
+    @IsOptional()
     @IsNotEmpty()
-    assignedToId: number;
+    assignedToId?: number;
 }

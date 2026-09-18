@@ -39,6 +39,7 @@ export class CreateTaskDto {
   companyId?: number;
 
   @IsInt()
+  @IsOptional()
   @IsNotEmpty()
-  assignedToId: number;
+  assignedToId?: number;
 }

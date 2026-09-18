@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserRole } from '../users/dto/create-user.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
 import { CompanyQueryDto } from './dto/company-query.dto.js';
-
 
 @Injectable()
 export class CompaniesService {
@@ -63,7 +63,7 @@ export class CompaniesService {
     return company;
   }
 
-  async getCompanyTasks(id: number) {
+  async getCompanyTasks(id: number, userId: number, userRole: UserRole) {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,
     })
@@ -74,10 +74,16 @@ export class CompaniesService {
       throw new NotFoundException(`Company not found`);
     }
 
-    return company;
+    let tasks = this.prisma.client.orm.public.Task.where({ companyId: id });
+
+    if (userRole === UserRole.EMPLOYEE) {
+      tasks = tasks.where({ assignedToId: userId });
+    }
+
+    return tasks.all();
   }
 
-  async getCompanyDeals(id: number) {
+  async getCompanyDeals(id: number, userId: number, userRole: UserRole) {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,
     })
@@ -88,7 +94,13 @@ export class CompaniesService {
       throw new NotFoundException(`Company not found`);
     }
 
-    return company;
+    let deals = this.prisma.client.orm.public.Deal.where({ companyId: id });
+
+    if (userRole === UserRole.EMPLOYEE) {
+      deals = deals.where({ assignedToId: userId });
+    }
+
+    return deals.all();
   }
 
   async updateCompany(id: number, dto: UpdateCompanyDto) {
