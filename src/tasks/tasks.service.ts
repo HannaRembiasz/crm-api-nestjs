@@ -6,7 +6,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto.js';
-import { UpdateTaskDto } from './dto/update-task.dto.js';
+import { TaskStatus, UpdateTaskDto } from './dto/update-task.dto.js';
 import { TaskQueryDto } from './dto/task-query.dto.js';
 import { UserRole } from '../users/dto/create-user.dto.js';
 
@@ -48,7 +48,6 @@ export class TasksService {
     if (query.companyId) {
       tasks = tasks.where({ companyId: query.companyId });
     }
-
 
     return tasks.all();
   }
@@ -130,6 +129,27 @@ export class TasksService {
 
     if (userRole === UserRole.EMPLOYEE && task.assignedToId !== userId) {
       throw new ForbiddenException('You cannot access this task');
+    }
+
+    if (userRole === UserRole.EMPLOYEE && dto.assignedToId !== undefined) {
+      throw new ForbiddenException('Employees cannot reassign tasks');
+    }
+
+    if (userRole === UserRole.EMPLOYEE && dto.status !== undefined) {
+      if (
+        task.status === TaskStatus.IN_PROGRESS &&
+        dto.status === TaskStatus.TODO
+      ) {
+        throw new ForbiddenException(
+          'Employees cannot move a task from IN_PROGRESS to TODO',
+        );
+      }
+
+      if (task.status === TaskStatus.DONE && dto.status !== TaskStatus.DONE) {
+        throw new ForbiddenException(
+          'Employees cannot reopen a completed task',
+        );
+      }
     }
 
     const updatedTask = await this.prisma.client.orm.public.Task.where({

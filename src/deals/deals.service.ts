@@ -9,6 +9,7 @@ import { CreateDealDto } from './dto/create-deal.dto.js';
 import { UpdateDealDto } from './dto/update-deal.dto.js';
 import { DealQueryDto } from './dto/deal-query.dto.js';
 import { UserRole } from '../users/dto/create-user.dto.js';
+import { DealStatus } from './dto/create-deal.dto.js';
 
 @Injectable()
 export class DealsService {
@@ -116,6 +117,19 @@ export class DealsService {
 
     if (userRole === UserRole.EMPLOYEE && deal.assignedToId !== userId) {
       throw new ForbiddenException(`You cannot access this deal`);
+    }
+
+    if (userRole === UserRole.EMPLOYEE && dto.assignedToId !== undefined) {
+      throw new ForbiddenException('Employees cannot reassign deals');
+    }
+
+    if (
+      userRole === UserRole.EMPLOYEE &&
+      (deal.status === DealStatus.WON || deal.status === DealStatus.LOST) &&
+      dto.status !== undefined &&
+      dto.status !== deal.status
+    ) {
+      throw new ForbiddenException('Employees cannot reopen a closed deal');
     }
 
     const updatedDeal = await this.prisma.client.orm.public.Deal.where({

@@ -44,10 +44,5 @@ export class UpdateTaskDto {
   @IsInt()
   @IsOptional()
   @IsNotEmpty()
-  companyId?: number;
-
-  @IsInt()
-  @IsOptional()
-  @IsNotEmpty()
   assignedToId?: number;
 }
