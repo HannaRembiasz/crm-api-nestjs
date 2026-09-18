@@ -1,4 +1,19 @@
-import { Controller, Query, Get, Post, Body, Param, Patch, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Query,
+  Get,
+  Post,
+  Body,
+  Param,
+  Patch,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { UserRole } from '../users/dto/create-user.dto.js';
 import { CompaniesService } from './companies.service.js';
 import { CreateCompanyDto } from './dto/create-company.dto.js';
 import { UpdateCompanyDto } from './dto/update-company.dto.js';
@@ -33,16 +48,22 @@ export class CompaniesController {
     return this.companiesService.getCompanyDeals(Number(id));
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Post()
   createCompany(@Body() dto: CreateCompanyDto) {
     return this.companiesService.createCompany(dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   updateCompany(@Param('id') id: string, @Body() dto: UpdateCompanyDto) {
     return this.companiesService.updateCompany(Number(id), dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteCompany(@Param('id') id: string) {

@@ -9,7 +9,11 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { UserRole } from '../users/dto/create-user.dto.js';
 import { ContactsService } from './contacts.service.js';
 import { CreateContactDto } from './dto/create-contact.dto.js';
 import { UpdateContactDto } from './dto/update-contact.dto.js';
@@ -34,16 +38,22 @@ export class ContactsController {
     return this.contactsService.getContactCompany(Number(id));
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Post()
   createContact(@Body() dto: CreateContactDto) {
     return this.contactsService.createContact(dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   updateContact(@Param('id') id: string, @Body() dto: UpdateContactDto) {
     return this.contactsService.updateContact(Number(id), dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteContact(@Param('id') id: string) {

@@ -9,11 +9,14 @@ import {
   HttpStatus,
   Query,
   Param,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto.js';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { CreateUserDto, UserRole } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserQueryDto } from './dto/user.query.dto.js';
 import { UsersService } from './users.service.js';
+import { Roles } from '../auth/roles.decorator.js';
 
 @Controller('users')
 export class UsersController {
@@ -39,16 +42,22 @@ export class UsersController {
     return this.usersService.getUserTasks(id);
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Post()
   createUser(@Body() dto: CreateUserDto) {
     return this.usersService.createUser(dto);
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   updateUser(@Param('id') id: number, @Body() dto: UpdateUserDto) {
     return this.usersService.updateUser(id, dto);
   }
 
+  @Roles(UserRole.ADMIN)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteUser(@Param('id') id: number) {

@@ -9,7 +9,11 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
+import { UserRole } from '../users/dto/create-user.dto.js';
 import { CreateTaskDto } from './dto/create-task.dto.js';
 import { UpdateTaskDto } from './dto/update-task.dto.js';
 import { TaskQueryDto } from './dto/task-query.dto.js';
@@ -49,6 +53,8 @@ export class TasksController {
     return this.tasksService.updateTask(id, dto);
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteTask(@Param('id') id: number) {
