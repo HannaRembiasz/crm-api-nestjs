@@ -12,6 +12,7 @@ import { IS_PUBLIC_KEY } from './public.decorator.js';
 export interface AuthenticatedRequest extends Request {
   user: {
     sub: number;
+    sid: number;
     email: string;
     role: string;
     iat: number;

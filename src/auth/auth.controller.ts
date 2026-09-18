@@ -1,5 +1,13 @@
-import { Controller, Post, Body, Get, Request, Res } from '@nestjs/common';
-import type { Response } from 'express';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Req,
+  Res,
+  UnauthorizedException,
+} from '@nestjs/common';
+import type { Response, Request } from 'express';
 import { Public } from './public.decorator.js';
 import type { AuthenticatedRequest } from './auth.guard.js';
 import { AuthService } from './auth.service.js';
@@ -11,7 +19,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('me')
-  getMe(@Request() request: AuthenticatedRequest) {
+  getMe(@Req() request: AuthenticatedRequest) {
     return request['user'];
   }
 
@@ -37,5 +45,49 @@ export class AuthController {
     });
 
     return { access_token };
+  }
+
+  @Public()
+  @Post('refresh')
+  async refresh(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const refreshToken = request.cookies['refresh_token'];
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token missing');
+    }
+
+    const { access_token, refresh_token, expires_at } =
+      await this.authService.refresh(refreshToken);
+
+    const maxAge = Math.max(new Date(expires_at).getTime() - Date.now(), 0);
+
+    response.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: maxAge,
+    });
+
+    return { access_token };
+  }
+
+  @Post('logout')
+  async logout(
+    @Req() request: AuthenticatedRequest,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    await this.authService.logout(request.user.sid);
+
+    response.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+
+    return { message: 'Logged out successfully' };
   }
 }
