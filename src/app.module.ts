@@ -8,9 +8,10 @@ import { TasksModule } from './tasks/tasks.module.js';
 import { DealsModule } from './deals/deals.module.js';
 import { UsersModule } from './users/users.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { StatsModule } from './stats/stats.module.js';
 
 @Module({
-  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule, UsersModule, AuthModule],
+  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule, UsersModule, AuthModule, StatsModule],
   controllers: [AppController],
   providers: [AppService],
 })
