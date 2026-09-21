@@ -26,8 +26,48 @@ export class ContactsService {
         contact.email.ilike(`%${query.email}%`),
       );
     }
+    if (query.companyId) {
+      contacts = contacts.where({ companyId: query.companyId });
+    }
 
-    return contacts.all();
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
+    const sortOrder = query.sortOrder ?? 'asc';
+
+    switch (query.sortBy ?? 'firstName') {
+      case 'firstName':
+        contacts = contacts.orderBy((contact) =>
+          sortOrder === 'asc'
+            ? contact.firstName.asc()
+            : contact.firstName.desc(),
+        );
+        break;
+
+      case 'lastName':
+        contacts = contacts.orderBy((contact) =>
+          sortOrder === 'asc'
+            ? contact.lastName.asc()
+            : contact.lastName.desc(),
+        );
+        break;
+
+      case 'email':
+        contacts = contacts.orderBy((contact) =>
+          sortOrder === 'asc' ? contact.email.asc() : contact.email.desc(),
+        );
+        break;
+
+      case 'createdAt':
+        contacts = contacts.orderBy((contact) =>
+          sortOrder === 'asc'
+            ? contact.createdAt.asc()
+            : contact.createdAt.desc(),
+        );
+        break;
+    }
+
+    return contacts.limit(limit).offset(offset).all();
   }
 
   async getContactById(id: number) {

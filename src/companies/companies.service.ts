@@ -30,7 +30,41 @@ export class CompaniesService {
       );
     }
 
-    return companies.all();
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
+
+    const sortOrder = query.sortOrder ?? 'asc';
+
+    switch (query.sortBy ?? 'name') {
+      case 'name':
+        companies = companies.orderBy((company) =>
+          sortOrder === 'asc' ? company.name.asc() : company.name.desc(),
+        );
+        break;
+
+      case 'city':
+        companies = companies.orderBy((company) =>
+          sortOrder === 'asc' ? company.city.asc() : company.city.desc(),
+        );
+        break;
+
+      case 'country':
+        companies = companies.orderBy((company) =>
+          sortOrder === 'asc' ? company.country.asc() : company.country.desc(),
+        );
+        break;
+
+      case 'createdAt':
+        companies = companies.orderBy((company) =>
+          sortOrder === 'asc'
+            ? company.createdAt.asc()
+            : company.createdAt.desc(),
+        );
+        break;
+    }
+
+    return companies.limit(limit).offset(offset).all();
   }
 
   async createCompany(dto: CreateCompanyDto) {
@@ -66,9 +100,7 @@ export class CompaniesService {
   async getCompanyTasks(id: number, userId: number, userRole: UserRole) {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,
-    })
-      .include('tasks')
-      .first();
+    }).first();
 
     if (!company) {
       throw new NotFoundException(`Company not found`);
@@ -86,9 +118,7 @@ export class CompaniesService {
   async getCompanyDeals(id: number, userId: number, userRole: UserRole) {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,
-    })
-      .include('deals')
-      .first();
+    }).first();
 
     if (!company) {
       throw new NotFoundException(`Company not found`);

@@ -6,6 +6,9 @@ import {
   IsOptional,
   IsInt,
   IsDateString,
+  IsIn,
+  Max,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -39,4 +42,26 @@ export class TaskQueryDto {
   @Type(() => Number)
   @IsInt()
   assignedToId?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit?: number = 10;
+
+  @IsOptional()
+  @IsIn(['title', 'status', 'priority', 'dueDate', 'createdAt'])
+  sortBy?: 'title' | 'status' | 'priority' | 'dueDate' | 'createdAt' =
+    'createdAt';
+
+  @IsOptional()
+  @IsIn(['asc', 'desc'])
+  sortOrder?: 'asc' | 'desc' = 'asc';
 }

@@ -20,7 +20,7 @@ export class AuthController {
 
   @Get('me')
   getMe(@Req() request: AuthenticatedRequest) {
-    return request['user'];
+    return this.authService.getMe(request.user.sub);
   }
 
   @Public()

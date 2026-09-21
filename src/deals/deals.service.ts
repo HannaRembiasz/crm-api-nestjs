@@ -34,7 +34,38 @@ export class DealsService {
       deals = deals.where({ companyId: query.companyId });
     }
 
-    return deals.all();
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
+    const sortOrder = query.sortOrder ?? 'asc';
+
+    switch (query.sortBy ?? 'createdAt') {
+      case 'title':
+        deals = deals.orderBy((deal) =>
+          sortOrder === 'asc' ? deal.title.asc() : deal.title.desc(),
+        );
+        break;
+
+      case 'status':
+        deals = deals.orderBy((deal) =>
+          sortOrder === 'asc' ? deal.status.asc() : deal.status.desc(),
+        );
+        break;
+
+      case 'value':
+        deals = deals.orderBy((deal) =>
+          sortOrder === 'asc' ? deal.value.asc() : deal.value.desc(),
+        );
+        break;
+
+      case 'createdAt':
+        deals = deals.orderBy((deal) =>
+          sortOrder === 'asc' ? deal.createdAt.asc() : deal.createdAt.desc(),
+        );
+        break;
+    }
+
+    return deals.limit(limit).offset(offset).all();
   }
 
   async getDealById(id: number, userId: number, userRole: UserRole) {

@@ -49,7 +49,44 @@ export class TasksService {
       tasks = tasks.where({ companyId: query.companyId });
     }
 
-    return tasks.all();
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+    const offset = (page - 1) * limit;
+    const sortOrder = query.sortOrder ?? 'asc';
+
+    switch (query.sortBy ?? 'createdAt') {
+      case 'title':
+        tasks = tasks.orderBy((task) =>
+          sortOrder === 'asc' ? task.title.asc() : task.title.desc(),
+        );
+        break;
+
+      case 'status':
+        tasks = tasks.orderBy((task) =>
+          sortOrder === 'asc' ? task.status.asc() : task.status.desc(),
+        );
+        break;
+
+      case 'priority':
+        tasks = tasks.orderBy((task) =>
+          sortOrder === 'asc' ? task.priority.asc() : task.priority.desc(),
+        );
+        break;
+
+      case 'dueDate':
+        tasks = tasks.orderBy((task) =>
+          sortOrder === 'asc' ? task.dueDate.asc() : task.dueDate.desc(),
+        );
+        break;
+
+      case 'createdAt':
+        tasks = tasks.orderBy((task) =>
+          sortOrder === 'asc' ? task.createdAt.asc() : task.createdAt.desc(),
+        );
+        break;
+    }
+
+    return tasks.limit(limit).offset(offset).all();
   }
 
   async getTaskById(id: number, userId: number, userRole: UserRole) {

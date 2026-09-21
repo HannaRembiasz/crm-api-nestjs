@@ -28,13 +28,17 @@ export class UsersService {
       users = users.where({ role: query.role });
     }
 
-    return users.all();
+    return users
+      .select('id', 'email', 'name', 'role', 'createdAt', 'updatedAt')
+      .all();
   }
 
   async getUserById(id: number) {
     const user = await this.prisma.client.orm.public.User.where({
       id: id,
-    }).first();
+    })
+      .select('id', 'email', 'name', 'role', 'createdAt', 'updatedAt')
+      .first();
 
     if (!user) {
       throw new NotFoundException(`User not found`);
@@ -44,9 +48,9 @@ export class UsersService {
   }
 
   async getUserDeals(id: number, userId: number, userRole: UserRole) {
-    const user = await this.prisma.client.orm.public.User.where({ id: id })
-      .include('deals')
-      .first();
+    const user = await this.prisma.client.orm.public.User.where({
+      id: id,
+    }).first();
 
     if (!user) {
       throw new NotFoundException(`User not found`);
@@ -64,9 +68,9 @@ export class UsersService {
   }
 
   async getUserTasks(id: number, userId: number, userRole: UserRole) {
-    const user = await this.prisma.client.orm.public.User.where({ id: id })
-      .include('tasks')
-      .first();
+    const user = await this.prisma.client.orm.public.User.where({
+      id: id,
+    }).first();
 
     if (!user) {
       throw new NotFoundException(`User not found`);
@@ -105,7 +109,9 @@ export class UsersService {
       throw new NotFoundException(`User not found`);
     }
 
-    return user;
+    const { password, ...safeUser } = user;
+
+    return safeUser;
   }
 
   async deleteUser(id: number) {
