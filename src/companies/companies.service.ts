@@ -83,6 +83,35 @@ export class CompaniesService {
     return company;
   }
 
+  async getCompanyOverview(id: number) {
+    const company = await this.prisma.client.orm.public.Company.where({
+      id,
+    }).first();
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    const contacts = await this.prisma.client.orm.public.Contact.where({
+      companyId: id,
+    }).all();
+
+    const tasks = await this.prisma.client.orm.public.Task.where({
+      companyId: id,
+    }).all();
+
+    const deals = await this.prisma.client.orm.public.Deal.where({
+      companyId: id,
+    }).all();
+
+    return {
+      company,
+      contacts,
+      tasks,
+      deals,
+    };
+  }
+
   async getCompanyContacts(id: number) {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,

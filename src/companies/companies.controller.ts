@@ -35,19 +35,40 @@ export class CompaniesController {
     return this.companiesService.getCompanyById(Number(id));
   }
 
+  @Roles(UserRole.ADMIN, UserRole.MANAGER)
+  @UseGuards(RolesGuard)
+  @Get(':id/overview')
+  getCompanyOverview(@Param('id') id: string) {
+    return this.companiesService.getCompanyOverview(Number(id));
+  }
+
   @Get(':id/contacts')
   getCompanyContacts(@Param('id') id: string) {
     return this.companiesService.getCompanyContacts(Number(id));
   }
 
   @Get(':id/tasks')
-  getCompanyTasks(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
-    return this.companiesService.getCompanyTasks(Number(id), request.user.sub, request.user.role);
+  getCompanyTasks(
+    @Param('id') id: string,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.companiesService.getCompanyTasks(
+      Number(id),
+      request.user.sub,
+      request.user.role,
+    );
   }
 
   @Get(':id/deals')
-  getCompanyDeals(@Param('id') id: string, @Req() request: AuthenticatedRequest) {
-    return this.companiesService.getCompanyDeals(Number(id), request.user.sub, request.user.role);
+  getCompanyDeals(
+    @Param('id') id: string,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.companiesService.getCompanyDeals(
+      Number(id),
+      request.user.sub,
+      request.user.role,
+    );
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
