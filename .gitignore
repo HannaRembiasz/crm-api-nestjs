@@ -24,3 +24,5 @@ lerna-debug.log*
 .tmp
 node_modules/
 dist/
+
+*.tsbuildinfo
