@@ -97,16 +97,34 @@ export class ContactsService {
   }
 
   async createContact(dto: CreateContactDto) {
+    const company = await this.prisma.client.orm.public.Company.first({
+      id: dto.companyId,
+    });
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
     return this.prisma.client.orm.public.Contact.create(dto);
   }
 
   async updateContact(id: number, dto: UpdateContactDto) {
+    if (dto.companyId !== undefined) {
+      const company = await this.prisma.client.orm.public.Company.first({
+        id: dto.companyId,
+      });
+
+      if (!company) {
+        throw new NotFoundException('Company not found');
+      }
+    }
+
     const contact = await this.prisma.client.orm.public.Contact.where({
-      id: id,
+      id,
     }).update(dto);
 
     if (!contact) {
-      throw new NotFoundException(`Contact not found`);
+      throw new NotFoundException('Contact not found');
     }
 
     return contact;

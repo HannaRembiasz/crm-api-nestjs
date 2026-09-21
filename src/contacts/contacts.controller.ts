@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -29,13 +30,13 @@ export class ContactsController {
   }
 
   @Get(':id')
-  getContactById(@Param('id') id: string) {
-    return this.contactsService.getContactById(Number(id));
+  getContactById(@Param('id', ParseIntPipe) id: number) {
+    return this.contactsService.getContactById(id);
   }
 
   @Get(':id/company')
-  getContactCompany(@Param('id') id: string) {
-    return this.contactsService.getContactCompany(Number(id));
+  getContactCompany(@Param('id', ParseIntPipe) id: number) {
+    return this.contactsService.getContactCompany(id);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
@@ -48,15 +49,18 @@ export class ContactsController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Patch(':id')
-  updateContact(@Param('id') id: string, @Body() dto: UpdateContactDto) {
-    return this.contactsService.updateContact(Number(id), dto);
+  updateContact(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateContactDto,
+  ) {
+    return this.contactsService.updateContact(id, dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteContact(@Param('id') id: string) {
-    return this.contactsService.deleteContact(Number(id));
+  deleteContact(@Param('id', ParseIntPipe) id: number) {
+    return this.contactsService.deleteContact(id);
   }
 }

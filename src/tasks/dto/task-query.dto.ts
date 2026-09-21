@@ -11,6 +11,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsAfterOrEqual } from '../../common/validation/is-after-or-equal.decorator.js';
 
 export class TaskQueryDto {
   @IsString()
@@ -31,6 +32,9 @@ export class TaskQueryDto {
 
   @IsDateString()
   @IsOptional()
+  @IsAfterOrEqual('dueAfter', {
+    message: 'dueBefore must be greater than or equal to dueAfter',
+  })
   dueBefore?: string;
 
   @IsOptional()

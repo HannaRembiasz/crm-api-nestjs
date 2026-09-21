@@ -146,6 +146,24 @@ export class TasksService {
       assignedToId = dto.assignedToId;
     }
 
+    if (dto.companyId) {
+      const company = await this.prisma.client.orm.public.Company.first({
+        id: dto.companyId,
+      });
+
+      if (!company) {
+        throw new NotFoundException('Company not found');
+      }
+    }
+
+    const user = await this.prisma.client.orm.public.User.first({
+      id: assignedToId,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return this.prisma.client.orm.public.Task.create({
       ...dto,
       assignedToId,
@@ -186,6 +204,16 @@ export class TasksService {
         throw new ForbiddenException(
           'Employees cannot reopen a completed task',
         );
+      }
+    }
+
+    if (dto.assignedToId !== undefined) {
+      const user = await this.prisma.client.orm.public.User.first({
+        id: dto.assignedToId,
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
       }
     }
 

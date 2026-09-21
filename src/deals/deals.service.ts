@@ -126,6 +126,22 @@ export class DealsService {
       assignedToId = dto.assignedToId;
     }
 
+    const company = await this.prisma.client.orm.public.Company.first({
+      id: dto.companyId,
+    });
+
+    if (!company) {
+      throw new NotFoundException('Company not found');
+    }
+
+    const user = await this.prisma.client.orm.public.User.first({
+      id: assignedToId,
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     return this.prisma.client.orm.public.Deal.create({
       ...dto,
       assignedToId,
@@ -161,6 +177,16 @@ export class DealsService {
       dto.status !== deal.status
     ) {
       throw new ForbiddenException('Employees cannot reopen a closed deal');
+    }
+
+    if (dto.assignedToId !== undefined) {
+      const user = await this.prisma.client.orm.public.User.first({
+        id: dto.assignedToId,
+      });
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
     }
 
     const updatedDeal = await this.prisma.client.orm.public.Deal.where({

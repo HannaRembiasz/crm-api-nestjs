@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import type { AuthenticatedRequest } from '../auth/auth.guard.js';
 import { RolesGuard } from '../auth/roles.guard.js';
@@ -31,17 +32,17 @@ export class DealsController {
   }
 
   @Get(':id')
-  getDealById(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getDealById(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.dealsService.getDealById(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/company')
-  getCompanyByDealId(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getCompanyByDealId(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.dealsService.getDealCompany(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/user')
-  getDealUser(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getDealUser(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.dealsService.getDealUser(id, request.user.sub, request.user.role);
   }
 
@@ -51,7 +52,7 @@ export class DealsController {
   }
 
   @Patch(':id')
-  updateDeal(@Param('id') id: number, @Body() dto: UpdateDealDto, @Req() request: AuthenticatedRequest) {
+  updateDeal(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateDealDto, @Req() request: AuthenticatedRequest) {
     return this.dealsService.updateDeal(id, request.user.sub, request.user.role, dto);
   }
 
@@ -59,7 +60,7 @@ export class DealsController {
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteDeal(@Param('id') id: number) {
+  deleteDeal(@Param('id', ParseIntPipe) id: number) {
     return this.dealsService.deleteDeal(id);
   }
 }

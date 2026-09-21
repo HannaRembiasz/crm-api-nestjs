@@ -2,6 +2,7 @@ import {
   Controller,
   Query,
   Get,
+  ParseIntPipe,
   Post,
   Body,
   Param,
@@ -31,29 +32,29 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  getCompanyById(@Param('id') id: string) {
-    return this.companiesService.getCompanyById(Number(id));
+  getCompanyById(@Param('id', ParseIntPipe) id: number) {
+    return this.companiesService.getCompanyById(id);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Get(':id/overview')
-  getCompanyOverview(@Param('id') id: string) {
-    return this.companiesService.getCompanyOverview(Number(id));
+  getCompanyOverview(@Param('id', ParseIntPipe) id: number) {
+    return this.companiesService.getCompanyOverview(id);
   }
 
   @Get(':id/contacts')
-  getCompanyContacts(@Param('id') id: string) {
-    return this.companiesService.getCompanyContacts(Number(id));
+  getCompanyContacts(@Param('id', ParseIntPipe) id: number) {
+    return this.companiesService.getCompanyContacts(id);
   }
 
   @Get(':id/tasks')
   getCompanyTasks(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Req() request: AuthenticatedRequest,
   ) {
     return this.companiesService.getCompanyTasks(
-      Number(id),
+      id,
       request.user.sub,
       request.user.role,
     );
@@ -61,11 +62,11 @@ export class CompaniesController {
 
   @Get(':id/deals')
   getCompanyDeals(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Req() request: AuthenticatedRequest,
   ) {
     return this.companiesService.getCompanyDeals(
-      Number(id),
+      id,
       request.user.sub,
       request.user.role,
     );
@@ -81,15 +82,18 @@ export class CompaniesController {
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Patch(':id')
-  updateCompany(@Param('id') id: string, @Body() dto: UpdateCompanyDto) {
-    return this.companiesService.updateCompany(Number(id), dto);
+  updateCompany(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateCompanyDto,
+  ) {
+    return this.companiesService.updateCompany(id, dto);
   }
 
   @Roles(UserRole.ADMIN, UserRole.MANAGER)
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteCompany(@Param('id') id: string) {
-    return this.companiesService.deleteCompany(Number(id));
+  deleteCompany(@Param('id', ParseIntPipe) id: number) {
+    return this.companiesService.deleteCompany(id);
   }
 }

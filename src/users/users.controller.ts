@@ -11,6 +11,7 @@ import {
   Param,
   UseGuards,
   Req,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { CreateUserDto, UserRole } from './dto/create-user.dto.js';
@@ -30,17 +31,17 @@ export class UsersController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: number) {
+  getUserById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.getUserById(id);
   }
 
   @Get(':id/deals')
-  getUserDeals(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getUserDeals(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.usersService.getUserDeals(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/tasks')
-  getUserTasks(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getUserTasks(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.usersService.getUserTasks(id, request.user.sub, request.user.role);
   }
 
@@ -54,7 +55,7 @@ export class UsersController {
   @Roles(UserRole.ADMIN)
   @UseGuards(RolesGuard)
   @Patch(':id')
-  updateUser(@Param('id') id: number, @Body() dto: UpdateUserDto) {
+  updateUser(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateUserDto) {
     return this.usersService.updateUser(id, dto);
   }
 
@@ -62,7 +63,7 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(@Param('id') id: number) {
+  deleteUser(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.deleteUser(id);
   }
 }

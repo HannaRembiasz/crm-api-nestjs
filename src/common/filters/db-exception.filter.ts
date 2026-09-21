@@ -1,4 +1,11 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
 import { Response } from 'express';
 
 interface SqlQueryError extends Error {
@@ -11,27 +18,39 @@ interface SqlQueryError extends Error {
 }
 
 function isSqlQueryError(error: unknown): error is SqlQueryError {
-  return typeof error === 'object' && error !== null && (error as any).kind === 'sql_query';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    (error as any).kind === 'sql_query'
+  );
 }
 
-const SQLSTATE_MAP: Record<string, { status: number; message: (e: SqlQueryError) => string }> = {
-  '23503': { // foreign_key_violation
+const SQLSTATE_MAP: Record<
+  string,
+  { status: number; message: (e: SqlQueryError) => string }
+> = {
+  '23503': {
+    // foreign_key_violation
     status: HttpStatus.BAD_REQUEST,
-    message: (e) => `Invalid reference — ${e.detail ?? `constraint "${e.constraint}" failed`}`,
+    message: () => 'Invalid reference.',
   },
-  '23505': { // unique_violation
+  '23505': {
+    // unique_violation
     status: HttpStatus.CONFLICT,
-    message: (e) => `Duplicate value — ${e.detail ?? `unique constraint "${e.constraint}" failed`}`,
+    message: () => 'A value that must be unique already exists.',
   },
-  '23502': { // not_null_violation
+  '23502': {
+    // not_null_violation
     status: HttpStatus.BAD_REQUEST,
-    message: (e) => `Missing required field${e.column ? `: "${e.column}"` : ''}`,
+    message: () => 'A required field is missing.',
   },
-  '23514': { // check_violation
+  '23514': {
+    // check_violation
     status: HttpStatus.BAD_REQUEST,
-    message: (e) => `Value violates constraint "${e.constraint}"`,
+    message: () => 'The provided value violates a data constraint.',
   },
-  '22P02': { // invalid_text_representation
+  '22P02': {
+    // invalid_text_representation
     status: HttpStatus.BAD_REQUEST,
     message: () => 'Invalid input syntax for one of the provided values.',
   },
@@ -59,13 +78,16 @@ export class DbExceptionFilter implements ExceptionFilter {
     if (isSqlQueryError(exception)) {
       const mapping = SQLSTATE_MAP[exception.sqlState];
       const status = mapping?.status ?? HttpStatus.INTERNAL_SERVER_ERROR;
-      const message = mapping?.message(exception) ?? 'Unexpected database error.';
+      const message =
+        mapping?.message(exception) ?? 'Unexpected database error.';
 
-      this.logger.error(`[${exception.sqlState}] ${exception.message}`, exception.stack);
+      this.logger.error(
+        `[${exception.sqlState}] ${exception.message}`,
+        exception.stack,
+      );
 
       return response.status(status).json({
         statusCode: status,
-        error: exception.sqlState,
         message,
         timestamp: new Date().toISOString(),
       });
