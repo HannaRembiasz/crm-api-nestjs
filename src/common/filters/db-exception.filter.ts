@@ -82,7 +82,7 @@ export class DbExceptionFilter implements ExceptionFilter {
         mapping?.message(exception) ?? 'Unexpected database error.';
 
       this.logger.error(
-        `[${exception.sqlState}] ${exception.message}`,
+        `[${exception.sqlState}] Database query error`,
         exception.stack,
       );
 
