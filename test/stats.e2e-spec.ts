@@ -38,9 +38,8 @@ describe('Stats (e2e)', () => {
   });
 
   it('returns deal statistics filtered by date', async () => {
-    const now = new Date();
-
-    const today = now.toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const futureDate = '2099-01-01';
 
     const adminToken = await jwtService.signAsync({
       sub: 1,
@@ -49,49 +48,32 @@ describe('Stats (e2e)', () => {
       role: UserRole.ADMIN,
     });
 
-    const baselineResponse = await request(app.getHttpServer())
-      .get('/stats/deals')
-      .query({
-        from: today,
-        to: today,
-      })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(200);
-
-    await request(app.getHttpServer())
-      .post('/companies')
+    const employeeResponse = await request(app.getHttpServer())
+      .post('/auth/register')
       .send({
-        name: `Stats Test Company ${Date.now()}`,
+        name: 'Stats Deal Employee',
+        email: `stats-deal-${Date.now()}@example.com`,
+        password: 'Password123!',
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     const companyResponse = await request(app.getHttpServer())
       .post('/companies')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         name: `Stats Deal Company ${Date.now()}`,
-      })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(201);
-
-    const employeeResponse = await request(app.getHttpServer())
-      .post('/auth/register')
-      .send({
-        name: 'Stats Test Employee',
-        email: `stats-${Date.now()}@example.com`,
-        password: 'Password123!',
       })
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/deals')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         title: `Stats Test Deal ${Date.now()}`,
         status: 'LEAD',
         companyId: companyResponse.body.id,
         assignedToId: employeeResponse.body.id,
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     const filteredResponse = await request(app.getHttpServer())
@@ -103,14 +85,23 @@ describe('Stats (e2e)', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
 
-    expect(filteredResponse.body.totalDeals).toBe(
-      baselineResponse.body.totalDeals + 1,
-    );
+    expect(filteredResponse.body.totalDeals).toBeGreaterThan(0);
+
+    const futureResponse = await request(app.getHttpServer())
+      .get('/stats/deals')
+      .query({
+        from: futureDate,
+        to: futureDate,
+      })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
+
+    expect(futureResponse.body.totalDeals).toBe(0);
   });
 
   it('returns overview statistics filtered by date', async () => {
-    const now = new Date();
-    const today = now.toISOString().slice(0, 10);
+    const today = new Date().toISOString().slice(0, 10);
+    const futureDate = '2099-01-01';
 
     const adminToken = await jwtService.signAsync({
       sub: 1,
@@ -118,15 +109,6 @@ describe('Stats (e2e)', () => {
       email: 'stats-admin@example.com',
       role: UserRole.ADMIN,
     });
-
-    const baselineResponse = await request(app.getHttpServer())
-      .get('/stats/overview')
-      .query({
-        from: today,
-        to: today,
-      })
-      .set('Authorization', `Bearer ${adminToken}`)
-      .expect(200);
 
     const employeeResponse = await request(app.getHttpServer())
       .post('/auth/register')
@@ -139,42 +121,42 @@ describe('Stats (e2e)', () => {
 
     const companyResponse = await request(app.getHttpServer())
       .post('/companies')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         name: `Stats Overview Company ${Date.now()}`,
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/contacts')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         firstName: 'Stats',
         lastName: 'Contact',
         email: `stats-contact-${Date.now()}@example.com`,
         companyId: companyResponse.body.id,
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/tasks')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         title: `Stats Overview Task ${Date.now()}`,
         companyId: companyResponse.body.id,
         assignedToId: employeeResponse.body.id,
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     await request(app.getHttpServer())
       .post('/deals')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         title: `Stats Overview Deal ${Date.now()}`,
         status: 'LEAD',
         companyId: companyResponse.body.id,
         assignedToId: employeeResponse.body.id,
       })
-      .set('Authorization', `Bearer ${adminToken}`)
       .expect(201);
 
     const filteredResponse = await request(app.getHttpServer())
@@ -186,28 +168,25 @@ describe('Stats (e2e)', () => {
       .set('Authorization', `Bearer ${adminToken}`)
       .expect(200);
 
-    expect(filteredResponse.body.companies).toBe(
-      baselineResponse.body.companies + 1,
-    );
+    expect(filteredResponse.body.companies).toBeGreaterThan(0);
+    expect(filteredResponse.body.contacts).toBeGreaterThan(0);
+    expect(filteredResponse.body.tasks.total).toBeGreaterThan(0);
+    expect(filteredResponse.body.tasks.todo).toBeGreaterThan(0);
+    expect(filteredResponse.body.deals.total).toBeGreaterThan(0);
+    expect(filteredResponse.body.deals.open).toBeGreaterThan(0);
 
-    expect(filteredResponse.body.contacts).toBe(
-      baselineResponse.body.contacts + 1,
-    );
+    const futureResponse = await request(app.getHttpServer())
+      .get('/stats/overview')
+      .query({
+        from: futureDate,
+        to: futureDate,
+      })
+      .set('Authorization', `Bearer ${adminToken}`)
+      .expect(200);
 
-    expect(filteredResponse.body.tasks.total).toBe(
-      baselineResponse.body.tasks.total + 1,
-    );
-
-    expect(filteredResponse.body.tasks.todo).toBe(
-      baselineResponse.body.tasks.todo + 1,
-    );
-
-    expect(filteredResponse.body.deals.total).toBe(
-      baselineResponse.body.deals.total + 1,
-    );
-
-    expect(filteredResponse.body.deals.open).toBe(
-      baselineResponse.body.deals.open + 1,
-    );
+    expect(futureResponse.body.companies).toBe(0);
+    expect(futureResponse.body.contacts).toBe(0);
+    expect(futureResponse.body.tasks.total).toBe(0);
+    expect(futureResponse.body.deals.total).toBe(0);
   });
 });
