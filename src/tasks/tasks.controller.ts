@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -31,17 +32,17 @@ export class TasksController {
   }
 
   @Get(':id')
-  getTaskById(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getTaskById(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.tasksService.getTaskById(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/company')
-  getTaskCompany(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getTaskCompany(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.tasksService.getTaskCompany(id, request.user.sub, request.user.role);
   }
 
   @Get(':id/user')
-  getTaskUser(@Param('id') id: number, @Req() request: AuthenticatedRequest) {
+  getTaskUser(@Param('id', ParseIntPipe) id: number, @Req() request: AuthenticatedRequest) {
     return this.tasksService.getTaskUser(id, request.user.sub, request.user.role);
   }
 
@@ -51,7 +52,7 @@ export class TasksController {
   }
 
   @Patch(':id')
-  updateTask(@Param('id') id: number, @Body() dto: UpdateTaskDto, @Req() request: AuthenticatedRequest) {
+  updateTask(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateTaskDto, @Req() request: AuthenticatedRequest) {
     return this.tasksService.updateTask(id, request.user.sub, request.user.role, dto);
   }
 
@@ -59,7 +60,7 @@ export class TasksController {
   @UseGuards(RolesGuard)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTask(@Param('id') id: number) {
+  deleteTask(@Param('id', ParseIntPipe) id: number) {
     return this.tasksService.deleteTask(id);
   }
 }

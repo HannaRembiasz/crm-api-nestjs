@@ -4,7 +4,7 @@ import {
   IsNotEmpty,
   IsEnum,
   IsOptional,
-  IsInt,
+  IsInt
 } from 'class-validator';
 
 export class UpdateDealDto {
