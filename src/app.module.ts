@@ -9,9 +9,28 @@ import { DealsModule } from './deals/deals.module.js';
 import { UsersModule } from './users/users.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { StatsModule } from './stats/stats.module.js';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
-  imports: [CompaniesModule, PrismaModule, ContactsModule, TasksModule, DealsModule, UsersModule, AuthModule, StatsModule],
+  imports: [
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: 'default',
+          ttl: 60_000,
+          limit: 10,
+        },
+      ],
+    }),
+    CompaniesModule,
+    PrismaModule,
+    ContactsModule,
+    TasksModule,
+    DealsModule,
+    UsersModule,
+    AuthModule,
+    StatsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
