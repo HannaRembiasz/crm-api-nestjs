@@ -78,7 +78,6 @@ describe('CompaniesService', () => {
   });
 
   // getAllCompanies
-
   it('should apply company query filters', async () => {
     prismaMock.client.orm.public.Company.all.mockResolvedValue([]);
 
@@ -91,18 +90,9 @@ describe('CompaniesService', () => {
     const whereMock = prismaMock.client.orm.public.Company.where;
 
     expect(whereMock).toHaveBeenCalledTimes(3);
-    expect(whereMock).toHaveBeenNthCalledWith(
-      1,
-      expect.any(Function),
-    );
-    expect(whereMock).toHaveBeenNthCalledWith(
-      2,
-      expect.any(Function),
-    );
-    expect(whereMock).toHaveBeenNthCalledWith(
-      3,
-      expect.any(Function),
-    );
+    expect(whereMock).toHaveBeenNthCalledWith(1, expect.any(Function));
+    expect(whereMock).toHaveBeenNthCalledWith(2, expect.any(Function));
+    expect(whereMock).toHaveBeenNthCalledWith(3, expect.any(Function));
   });
 
   it('should apply pagination and sorting', async () => {
@@ -115,21 +105,15 @@ describe('CompaniesService', () => {
       sortOrder: 'desc',
     });
 
-    expect(
-      prismaMock.client.orm.public.Company.orderBy,
-    ).toHaveBeenCalledTimes(1);
+    expect(prismaMock.client.orm.public.Company.orderBy).toHaveBeenCalledTimes(
+      1,
+    );
 
-    expect(
-      prismaMock.client.orm.public.Company.limit,
-    ).toHaveBeenCalledWith(5);
+    expect(prismaMock.client.orm.public.Company.limit).toHaveBeenCalledWith(5);
 
-    expect(
-      prismaMock.client.orm.public.Company.offset,
-    ).toHaveBeenCalledWith(5);
+    expect(prismaMock.client.orm.public.Company.offset).toHaveBeenCalledWith(5);
 
-    expect(
-      prismaMock.client.orm.public.Company.all,
-    ).toHaveBeenCalledTimes(1);
+    expect(prismaMock.client.orm.public.Company.all).toHaveBeenCalledTimes(1);
   });
 
   // createCompany
@@ -153,40 +137,36 @@ describe('CompaniesService', () => {
 
     expect(result).toEqual(createdCompany);
 
-    expect(
-      prismaMock.client.orm.public.Company.create,
-    ).toHaveBeenCalledWith(dto);
+    expect(prismaMock.client.orm.public.Company.create).toHaveBeenCalledWith(
+      dto,
+    );
   });
 
   // getCompanyById
-  
+
   it('should return a company by id', async () => {
     const company = {
       id: 1,
       name: 'Acme',
     };
 
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      company,
-    );
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(company);
 
     const result = await service.getCompanyById(1);
 
     expect(result).toEqual(company);
 
-    expect(
-      prismaMock.client.orm.public.Company.first,
-    ).toHaveBeenCalledWith({ id: 1 });
+    expect(prismaMock.client.orm.public.Company.first).toHaveBeenCalledWith({
+      id: 1,
+    });
   });
 
   it('should throw NotFoundException when company does not exist', async () => {
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      undefined,
-    );
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(undefined);
 
-    await expect(
-      service.getCompanyById(999),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getCompanyById(999)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   // getCompanyOverview
@@ -201,12 +181,8 @@ describe('CompaniesService', () => {
     const tasks = [{ id: 2, companyId: 1 }];
     const deals = [{ id: 3, companyId: 1 }];
 
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      company,
-    );
-    prismaMock.client.orm.public.Contact.all.mockResolvedValue(
-      contacts,
-    );
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(company);
+    prismaMock.client.orm.public.Contact.all.mockResolvedValue(contacts);
     prismaMock.client.orm.public.Task.all.mockResolvedValue(tasks);
     prismaMock.client.orm.public.Deal.all.mockResolvedValue(deals);
 
@@ -219,63 +195,68 @@ describe('CompaniesService', () => {
       deals,
     });
 
-    expect(
-      prismaMock.client.orm.public.Contact.where,
-    ).toHaveBeenCalledWith({ companyId: 1 });
+    expect(prismaMock.client.orm.public.Contact.where).toHaveBeenCalledWith({
+      companyId: 1,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Task.where,
-    ).toHaveBeenCalledWith({ companyId: 1 });
+    expect(prismaMock.client.orm.public.Task.where).toHaveBeenCalledWith({
+      companyId: 1,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Deal.where,
-    ).toHaveBeenCalledWith({ companyId: 1 });
+    expect(prismaMock.client.orm.public.Deal.where).toHaveBeenCalledWith({
+      companyId: 1,
+    });
   });
 
   it('should throw NotFoundException when overview company does not exist', async () => {
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      undefined,
-    );
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(undefined);
 
-    await expect(
-      service.getCompanyOverview(999),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getCompanyOverview(999)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   // getCompanyContacts
-
   it('should return company contacts', async () => {
     const company = {
       id: 1,
       name: 'Acme',
-      contacts: [{ id: 10, name: 'John' }],
     };
 
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      company,
-    );
+    const contacts = [
+      {
+        id: 10,
+        companyId: 1,
+      },
+    ];
+
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(company);
+
+    prismaMock.client.orm.public.Contact.where.mockReturnValue({
+      all: vi.fn().mockResolvedValue(contacts),
+    } as any);
 
     const result = await service.getCompanyContacts(1);
 
-    expect(result).toEqual(company);
+    expect(result).toEqual(contacts);
 
-    expect(
-      prismaMock.client.orm.public.Company.where,
-    ).toHaveBeenCalledWith({ id: 1 });
+    expect(prismaMock.client.orm.public.Company.where).toHaveBeenCalledWith({
+      id: 1,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Company.include,
-    ).toHaveBeenCalledWith('contacts');
+    expect(prismaMock.client.orm.public.Company.first).toHaveBeenCalled();
+
+    expect(prismaMock.client.orm.public.Contact.where).toHaveBeenCalledWith({
+      companyId: 1,
+    });
   });
 
   it('should throw NotFoundException when company contacts target does not exist', async () => {
-    prismaMock.client.orm.public.Company.first.mockResolvedValue(
-      undefined,
-    );
+    prismaMock.client.orm.public.Company.first.mockResolvedValue(undefined);
 
-    await expect(
-      service.getCompanyContacts(999),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.getCompanyContacts(999)).rejects.toThrow(
+      NotFoundException,
+    );
   });
 
   // getCompanyTasks
@@ -295,21 +276,17 @@ describe('CompaniesService', () => {
 
     prismaMock.client.orm.public.Task.all.mockResolvedValue(tasks);
 
-    const result = await service.getCompanyTasks(
-      5,
-      20,
-      UserRole.EMPLOYEE,
-    );
+    const result = await service.getCompanyTasks(5, 20, UserRole.EMPLOYEE);
 
     expect(result).toEqual(tasks);
 
-    expect(
-      prismaMock.client.orm.public.Task.where,
-    ).toHaveBeenNthCalledWith(1, { companyId: 5 });
+    expect(prismaMock.client.orm.public.Task.where).toHaveBeenNthCalledWith(1, {
+      companyId: 5,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Task.where,
-    ).toHaveBeenNthCalledWith(2, { assignedToId: 20 });
+    expect(prismaMock.client.orm.public.Task.where).toHaveBeenNthCalledWith(2, {
+      assignedToId: 20,
+    });
   });
 
   it('should return all company tasks for a manager', async () => {
@@ -324,21 +301,15 @@ describe('CompaniesService', () => {
 
     prismaMock.client.orm.public.Task.all.mockResolvedValue(tasks);
 
-    const result = await service.getCompanyTasks(
-      5,
-      1,
-      UserRole.MANAGER,
-    );
+    const result = await service.getCompanyTasks(5, 1, UserRole.MANAGER);
 
     expect(result).toEqual(tasks);
 
-    expect(
-      prismaMock.client.orm.public.Task.where,
-    ).toHaveBeenCalledTimes(1);
+    expect(prismaMock.client.orm.public.Task.where).toHaveBeenCalledTimes(1);
 
-    expect(
-      prismaMock.client.orm.public.Task.where,
-    ).toHaveBeenCalledWith({ companyId: 5 });
+    expect(prismaMock.client.orm.public.Task.where).toHaveBeenCalledWith({
+      companyId: 5,
+    });
   });
 
   // getCompanyDeals
@@ -358,21 +329,17 @@ describe('CompaniesService', () => {
 
     prismaMock.client.orm.public.Deal.all.mockResolvedValue(deals);
 
-    const result = await service.getCompanyDeals(
-      5,
-      20,
-      UserRole.EMPLOYEE,
-    );
+    const result = await service.getCompanyDeals(5, 20, UserRole.EMPLOYEE);
 
     expect(result).toEqual(deals);
 
-    expect(
-      prismaMock.client.orm.public.Deal.where,
-    ).toHaveBeenNthCalledWith(1, { companyId: 5 });
+    expect(prismaMock.client.orm.public.Deal.where).toHaveBeenNthCalledWith(1, {
+      companyId: 5,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Deal.where,
-    ).toHaveBeenNthCalledWith(2, { assignedToId: 20 });
+    expect(prismaMock.client.orm.public.Deal.where).toHaveBeenNthCalledWith(2, {
+      assignedToId: 20,
+    });
   });
 
   it('should return all company deals for a manager', async () => {
@@ -387,23 +354,16 @@ describe('CompaniesService', () => {
 
     prismaMock.client.orm.public.Deal.all.mockResolvedValue(deals);
 
-    const result = await service.getCompanyDeals(
-      5,
-      1,
-      UserRole.MANAGER,
-    );
+    const result = await service.getCompanyDeals(5, 1, UserRole.MANAGER);
 
     expect(result).toEqual(deals);
 
-    expect(
-      prismaMock.client.orm.public.Deal.where,
-    ).toHaveBeenCalledTimes(1);
+    expect(prismaMock.client.orm.public.Deal.where).toHaveBeenCalledTimes(1);
 
-    expect(
-      prismaMock.client.orm.public.Deal.where,
-    ).toHaveBeenCalledWith({ companyId: 5 });
+    expect(prismaMock.client.orm.public.Deal.where).toHaveBeenCalledWith({
+      companyId: 5,
+    });
   });
-
 
   // updateCompany
 
@@ -423,21 +383,17 @@ describe('CompaniesService', () => {
 
     expect(result).toEqual(updatedCompany);
 
-    expect(
-      prismaMock.client.orm.public.Company.where,
-    ).toHaveBeenCalledWith({ id: 1 });
+    expect(prismaMock.client.orm.public.Company.where).toHaveBeenCalledWith({
+      id: 1,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Company.update,
-    ).toHaveBeenCalledWith({
+    expect(prismaMock.client.orm.public.Company.update).toHaveBeenCalledWith({
       name: 'Updated Acme',
     });
   });
 
   it('should throw NotFoundException when updating a nonexistent company', async () => {
-    prismaMock.client.orm.public.Company.update.mockResolvedValue(
-      undefined,
-    );
+    prismaMock.client.orm.public.Company.update.mockResolvedValue(undefined);
 
     await expect(
       service.updateCompany(999, {
@@ -457,22 +413,16 @@ describe('CompaniesService', () => {
 
     expect(result).toBeUndefined();
 
-    expect(
-      prismaMock.client.orm.public.Company.where,
-    ).toHaveBeenCalledWith({ id: 1 });
+    expect(prismaMock.client.orm.public.Company.where).toHaveBeenCalledWith({
+      id: 1,
+    });
 
-    expect(
-      prismaMock.client.orm.public.Company.delete,
-    ).toHaveBeenCalled();
+    expect(prismaMock.client.orm.public.Company.delete).toHaveBeenCalled();
   });
 
   it('should throw NotFoundException when deleting a nonexistent company', async () => {
-    prismaMock.client.orm.public.Company.delete.mockResolvedValue(
-      undefined,
-    );
+    prismaMock.client.orm.public.Company.delete.mockResolvedValue(undefined);
 
-    await expect(
-      service.deleteCompany(999),
-    ).rejects.toThrow(NotFoundException);
+    await expect(service.deleteCompany(999)).rejects.toThrow(NotFoundException);
   });
 });

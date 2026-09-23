@@ -12,7 +12,7 @@ describe('Authentication (e2e)', () => {
   let app: INestApplication<App>;
   let jwtService: JwtService;
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -33,7 +33,7 @@ describe('Authentication (e2e)', () => {
     await app.init();
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await app.close();
   });
 

@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import type { StatsOverview, StatsDeals } from './stats.types.js';
+// import type { StatsOverview, StatsDeals } from './stats.types.js';
 import type { StatsQueryDto } from './dto/stats-query.dto.js';
+import type { StatsOverviewResponseDto } from './dto/stats-overview-response.dto.js';
+import type { StatsDealsResponseDto } from './dto/stats-deals-response.dto.js';
 
 @Injectable()
 export class StatsService {
   constructor(private prisma: PrismaService) {}
 
-  async getStats(query: StatsQueryDto): Promise<StatsOverview> {
+  async getStats(query: StatsQueryDto): Promise<StatsOverviewResponseDto> {
     let companies = this.prisma.client.orm.public.Company;
     let contacts = this.prisma.client.orm.public.Contact;
     let tasks = this.prisma.client.orm.public.Task;
@@ -97,7 +99,7 @@ export class StatsService {
     };
   }
 
-  async getStatsDeals(query: StatsQueryDto): Promise<StatsDeals> {
+  async getStatsDeals(query: StatsQueryDto): Promise<StatsDealsResponseDto> {
     let deals = this.prisma.client.orm.public.Deal;
 
     if (query.from) {
