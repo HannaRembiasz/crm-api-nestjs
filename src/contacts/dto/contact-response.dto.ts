@@ -41,7 +41,7 @@ export class ContactResponseDto {
   jobTitle: string | null;
 
   @ApiProperty({
-    example: 'Primary contact for the account.',
+    example: 'Primary contact to the company.',
     nullable: true,
     description: 'Additional notes about the contact.',
   })

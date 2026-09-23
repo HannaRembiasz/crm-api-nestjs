@@ -85,14 +85,12 @@ export class ContactsService {
   async getContactCompany(id: number) {
     const contact = await this.prisma.client.orm.public.Contact.where({
       id: id,
-    })
-      .include('company')
-      .first();
+    }).include('company').first();
 
     if (!contact) {
       throw new NotFoundException(`Contact not found`);
     }
-
+    
     return contact;
   }
 
