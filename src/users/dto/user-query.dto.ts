@@ -1,41 +1,32 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsEmail,
-  IsOptional,
-  IsEnum,
-} from 'class-validator';
+import { IsString, IsOptional, IsEnum } from 'class-validator';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { UserRole } from './create-user.dto.js';
 
-export class UpdateUserDto {
+export class UserQueryDto {
   @ApiPropertyOptional({
     example: 'Hanna',
-    description: 'User name.',
+    description: 'Filter users by name.',
   })
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   name?: string;
 
   @ApiPropertyOptional({
     example: 'hanna@example.com',
-    description: 'User email address.',
+    description: 'Filter users by email address.',
   })
   @IsOptional()
-  @IsEmail()
-  @IsNotEmpty()
+  @IsString()
   email?: string;
 
   @ApiPropertyOptional({
     enum: UserRole,
-    example: UserRole.MANAGER,
-    description: 'User role.',
+    example: UserRole.EMPLOYEE,
+    description: 'Filter users by role.',
   })
   @IsOptional()
   @IsEnum(UserRole)
-  @IsNotEmpty()
   role?: UserRole;
 }
