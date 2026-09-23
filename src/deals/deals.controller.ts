@@ -13,6 +13,7 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import type { AuthenticatedRequest } from '../auth/auth.guard.js';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -22,6 +23,8 @@ import { UpdateDealDto } from './dto/update-deal.dto.js';
 import { DealsService } from './deals.service.js';
 import { DealQueryDto } from './dto/deal-query.dto.js';
 
+@ApiTags('Deals')
+@ApiBearerAuth()
 @Controller('deals')
 export class DealsController {
   constructor(private readonly dealsService: DealsService) {}

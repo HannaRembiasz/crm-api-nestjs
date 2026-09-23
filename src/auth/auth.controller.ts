@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import type { Response, Request } from 'express';
 import { Public } from './public.decorator.js';
 import type { AuthenticatedRequest } from './auth.guard.js';
@@ -16,10 +17,12 @@ import { RegisterDto } from './dto/register.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBearerAuth()
   @Get('me')
   getMe(@Req() request: AuthenticatedRequest) {
     return this.authService.getMe(request.user.sub);
@@ -82,6 +85,7 @@ export class AuthController {
     return { access_token };
   }
 
+  @ApiBearerAuth()
   @Post('logout')
   async logout(
     @Req() request: AuthenticatedRequest,

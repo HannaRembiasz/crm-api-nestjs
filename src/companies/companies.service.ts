@@ -116,14 +116,17 @@ export class CompaniesService {
     const company = await this.prisma.client.orm.public.Company.where({
       id: id,
     })
-      .include('contacts')
       .first();
 
     if (!company) {
       throw new NotFoundException(`Company not found`);
     }
 
-    return company;
+    let contacts = await this.prisma.client.orm.public.Contact.where({
+      companyId: id,
+    }).all();
+
+    return contacts;
   }
 
   async getCompanyTasks(id: number, userId: number, userRole: UserRole) {

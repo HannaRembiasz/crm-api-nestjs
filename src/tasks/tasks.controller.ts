@@ -13,6 +13,7 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
 import { UserRole } from '../users/dto/create-user.dto.js';
@@ -22,6 +23,8 @@ import { TaskQueryDto } from './dto/task-query.dto.js';
 import { TasksService } from './tasks.service.js';
 import type { AuthenticatedRequest } from '../auth/auth.guard.js';
 
+@ApiTags('Tasks')
+@ApiBearerAuth()
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
