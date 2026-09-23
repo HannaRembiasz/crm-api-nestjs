@@ -39,7 +39,7 @@ export class UpdateTaskDto {
   @ApiPropertyOptional({
     enum: TaskStatus,
     example: TaskStatus.IN_PROGRESS,
-    description: 'Current task status.',
+    description: 'Task status. EMPLOYEE can update the status of their own tasks, but cannot move IN_PROGRESS back to TODO or reopen a completed task (DONE).',
   })
   @IsEnum(TaskStatus)
   @IsOptional()

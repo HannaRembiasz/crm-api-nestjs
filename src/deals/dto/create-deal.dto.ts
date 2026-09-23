@@ -7,27 +7,60 @@ export enum DealStatus {
     LOST = 'LOST',
 }
 
-import { IsString, IsNotEmpty, IsEnum, IsOptional, IsInt } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsOptional,
+  IsInt,
+} from 'class-validator';
+
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger';
+
 export class CreateDealDto {
-    @IsString()
-    @IsNotEmpty()
-    title: string;
+  @ApiProperty({
+    example: 'Website redesign project',
+    description: 'Deal title.',
+  })
+  @IsString()
+  @IsNotEmpty()
+  title: string;
 
-    @IsString()
-    @IsOptional()
-    @IsNotEmpty()
-    value?: string;
+  @ApiPropertyOptional({
+    example: '15000.00',
+    description: 'Deal value.',
+  })
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  value?: string;
 
-    @IsEnum(DealStatus)
-    @IsNotEmpty()
-    status: DealStatus;
+  @ApiProperty({
+    enum: DealStatus,
+    example: DealStatus.LEAD,
+    description: 'Initial deal status.',
+  })
+  @IsEnum(DealStatus)
+  @IsNotEmpty()
+  status: DealStatus;
 
-    @IsInt()
-    @IsNotEmpty()
-    companyId: number;
+  @ApiProperty({
+    example: 1,
+    description: 'ID of the company associated with the deal.',
+  })
+  @IsInt()
+  @IsNotEmpty()
+  companyId: number;
 
-    @IsInt()
-    @IsOptional()
-    @IsNotEmpty()
-    assignedToId?: number;
+  @ApiPropertyOptional({
+    example: 7,
+    description: 'ID of the user assigned to the deal.',
+  })
+  @IsInt()
+  @IsOptional()
+  @IsNotEmpty()
+  assignedToId?: number;
 }

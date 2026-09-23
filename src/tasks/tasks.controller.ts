@@ -81,7 +81,8 @@ export class TasksController {
   // Get task by ID
   @ApiOperation({
     summary: 'Get task by ID',
-    description: 'Returns a single task using its unique identifier. EMPLOYEE can only access their own tasks.',
+    description:
+      'Returns a single task using its unique identifier. EMPLOYEE can only access their own tasks.',
   })
   @ApiParam({
     name: 'id',
@@ -122,7 +123,8 @@ export class TasksController {
   // Get task with company
   @ApiOperation({
     summary: 'Get task with company',
-    description: 'Returns a task together with the company associated with it. EMPLOYEE can only access their own tasks.',
+    description:
+      'Returns a task together with the company associated with it. EMPLOYEE can only access their own tasks.',
   })
   @ApiParam({
     name: 'id',
@@ -163,7 +165,8 @@ export class TasksController {
   // Get task with assigned user
   @ApiOperation({
     summary: 'Get task with assigned user',
-    description: 'Returns a task together with the user assigned to it. EMPLOYEE can only access their own tasks.',
+    description:
+      'Returns a task together with the user assigned to it. EMPLOYEE can only access their own tasks.',
   })
   @ApiParam({
     name: 'id',
@@ -238,7 +241,8 @@ export class TasksController {
   // Update task
   @ApiOperation({
     summary: 'Update task',
-    description: 'Updates an existing task. Only provided fields are changed. EMPLOYEE can only update their own tasks but cannot change assigned company. ADMIN and MANAGER can update any task.',
+    description:
+      'Updates an existing task. Only provided fields are changed. EMPLOYEE can only update their own tasks but cannot reassign them,  move a task from IN_PROGRESS back to TODO, or reopen a completed task (DONE). ADMIN and MANAGER can update any task.',
   })
   @ApiParam({
     name: 'id',
@@ -256,7 +260,8 @@ export class TasksController {
     description: 'Authentication required or token is invalid.',
   })
   @ApiForbiddenResponse({
-    description: 'You do not have permission to update this task.',
+    description:
+      'Employee cannot update a task assigned to another user, reassign a task, move a task from IN_PROGRESS to TODO, or reopen a completed task (DONE).',
   })
   @ApiNotFoundResponse({
     description: 'Task or referenced user was not found.',
