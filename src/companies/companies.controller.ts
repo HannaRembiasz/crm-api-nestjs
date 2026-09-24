@@ -56,50 +56,6 @@ export class CompaniesController {
     description:
       'Returns a paginated list of companies with optional name, city, and country filters.',
   })
-  @ApiQuery({
-    name: 'name',
-    required: false,
-    description: 'Filter companies by name.',
-    example: 'Company',
-  })
-  @ApiQuery({
-    name: 'city',
-    required: false,
-    description: 'Filter companies by city.',
-    example: 'Warsaw',
-  })
-  @ApiQuery({
-    name: 'country',
-    required: false,
-    description: 'Filter companies by country.',
-    example: 'Poland',
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number.',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Number of companies per page.',
-    example: 10,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    enum: ['name', 'city', 'country', 'createdAt'],
-    description: 'Field used to sort the results.',
-    example: 'name',
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    required: false,
-    enum: ['asc', 'desc'],
-    description: 'Sort direction.',
-    example: 'asc',
-  })
   @ApiOkResponse({
     description: 'Companies returned successfully.',
     type: [CompanyResponseDto],
@@ -160,9 +116,8 @@ export class CompaniesController {
     example: 1,
   })
   @ApiOkResponse({
-    description:
-      'Company overview returned successfully.',
-type: CompanyOverviewResponseDto,
+    description: 'Company overview returned successfully.',
+    type: CompanyOverviewResponseDto,
   })
   @ApiBadRequestResponse({
     description: 'Company ID must be a valid integer.',
@@ -361,7 +316,6 @@ type: CompanyOverviewResponseDto,
   ) {
     return this.companiesService.updateCompany(id, dto);
   }
-
 
   // Delete company endpoint
   @Roles(UserRole.ADMIN, UserRole.MANAGER)

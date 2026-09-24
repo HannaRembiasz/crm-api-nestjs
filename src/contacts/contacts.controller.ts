@@ -52,56 +52,6 @@ export class ContactsController {
     description:
       'Returns a paginated list of contacts with optional filtering and sorting.',
   })
-  @ApiQuery({
-    name: 'firstName',
-    required: false,
-    description: 'Filter contacts by first name.',
-    example: 'John',
-  })
-  @ApiQuery({
-    name: 'lastName',
-    required: false,
-    description: 'Filter contacts by last name.',
-    example: 'Smith',
-  })
-  @ApiQuery({
-    name: 'email',
-    required: false,
-    description: 'Filter contacts by email address.',
-    example: 'john@example.com',
-  })
-  @ApiQuery({
-    name: 'companyId',
-    required: false,
-    description: 'Filter contacts by company ID.',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number.',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Number of contacts per page.',
-    example: 10,
-  })
-  @ApiQuery({
-    name: 'sortBy',
-    required: false,
-    enum: ['firstName', 'lastName', 'email', 'createdAt'],
-    description: 'Field used to sort the results.',
-    example: 'firstName',
-  })
-  @ApiQuery({
-    name: 'sortOrder',
-    required: false,
-    enum: ['asc', 'desc'],
-    description: 'Sort direction.',
-    example: 'asc',
-  })
   @ApiOkResponse({
     description: 'Contacts returned successfully.',
     type: [ContactResponseDto],

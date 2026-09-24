@@ -54,25 +54,6 @@ export class UsersController {
     description:
       'Returns a list of users with optional filtering by name, email, and role.',
   })
-  @ApiQuery({
-    name: 'name',
-    required: false,
-    description: 'Filter users by name.',
-    example: 'Hanna',
-  })
-  @ApiQuery({
-    name: 'email',
-    required: false,
-    description: 'Filter users by email address.',
-    example: 'hanna@example.com',
-  })
-  @ApiQuery({
-    name: 'role',
-    required: false,
-    enum: UserRole,
-    description: 'Filter users by role.',
-    example: UserRole.EMPLOYEE,
-  })
   @ApiOkResponse({
     description: 'Users returned successfully.',
     type: [UserResponseDto],
