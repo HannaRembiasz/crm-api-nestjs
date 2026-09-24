@@ -9,6 +9,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from './public.decorator.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 
 export interface AuthenticatedRequest extends Request {
   user: {
@@ -26,6 +27,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
+    private readonly prisma: PrismaService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -37,7 +39,7 @@ export class AuthGuard implements CanActivate {
     if (isPublic) {
       return true;
     }
-    
+
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
     const token = this.extractTokenFromHeader(request);
@@ -48,6 +50,22 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token);
+
+      const session = await this.prisma.client.orm.public.AuthSession.where({
+        id: payload.sid,
+      }).first();
+
+      if (!session) {
+        throw new UnauthorizedException();
+      }
+
+      if (session.revokedAt) {
+        throw new UnauthorizedException();
+      }
+
+      if (new Date(session.expiresAt) <= new Date()) {
+        throw new UnauthorizedException();
+      }
 
       request['user'] = payload;
 

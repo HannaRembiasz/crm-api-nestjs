@@ -244,4 +244,46 @@ it('rejects refresh after logout', async () => {
     .post('/auth/refresh')
     .expect(401);
 });
+
+// Test for rejecting an access token after logout
+it('rejects access with an access token after logout', async () => {
+  const agent = request.agent(app.getHttpServer());
+
+  const email = `logout-access-${Date.now()}@example.com`;
+  const password = 'Password123!';
+
+  await agent
+    .post('/auth/register')
+    .send({
+      name: 'Logout Access Test User',
+      email,
+      password,
+    })
+    .expect(201);
+
+  const loginResponse = await agent
+    .post('/auth/login')
+    .send({
+      email,
+      password,
+    })
+    .expect(201);
+
+  const accessToken = loginResponse.body.access_token;
+
+  await agent
+    .get('/auth/me')
+    .set('Authorization', `Bearer ${accessToken}`)
+    .expect(200);
+
+  await agent
+    .post('/auth/logout')
+    .set('Authorization', `Bearer ${accessToken}`)
+    .expect(201);
+
+  await agent
+    .get('/auth/me')
+    .set('Authorization', `Bearer ${accessToken}`)
+    .expect(401);
+});
 });
