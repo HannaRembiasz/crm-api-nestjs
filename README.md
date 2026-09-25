@@ -7,7 +7,7 @@ The project focuses on a production-oriented backend architecture: authenticatio
 ## 🚀 Live Demo
 
 **Swagger API documentation:**
-`https://crm-api-nestjs.onrender.com/docs`
+[crm-api-nestjs.onrender.com/docs](https://crm-api-nestjs.onrender.com/docs)
 
 The live API can be explored and tested directly through Swagger UI.
 
@@ -433,12 +433,12 @@ The production deployment includes seeded demo data so the API can be explored w
 
 ```text
 Manager:
-Email: [DEMO_MANAGER_EMAIL]
-Password: [DEMO_MANAGER_PASSWORD]
+Email: employee@mail.com
+Password: employee.password
 
 Employee:
-Email: [DEMO_EMPLOYEE_EMAIL]
-Password: [DEMO_EMPLOYEE_PASSWORD]
+Email: manager@mail.com
+Password: manager.password
 ```
 
 ---
@@ -478,9 +478,9 @@ This project was built to demonstrate practical backend development skills with 
 
 **Hanna Rembiasz**
 
-GitHub: https://github.com/HannaRembiasz
+GitHub: [Hanna Rembiasz Profile](https://github.com/HannaRembiasz)
 
-Repository: https://github.com/HannaRembiasz/crm-api-nestjs
+Repository: [CRM-API-NESTJS](https://github.com/HannaRembiasz/crm-api-nestjs)
 
 ---
 
