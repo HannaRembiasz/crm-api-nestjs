@@ -121,13 +121,6 @@ export class AuthController {
         password: 'manager.password',
       },
     },
-    admin: {
-      summary: 'Admin',
-      value: {
-        email: 'admin@mail.com',
-        password: 'admin.password',
-      },
-    },
   },
 })
   @ApiCreatedResponse({

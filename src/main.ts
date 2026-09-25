@@ -27,7 +27,7 @@ A production-ready REST API for a CRM application built with NestJS, PostgreSQL,
 
 The API provides company, contact, task, deal, and user management, with role-based and resource-level authorization. It also includes validation, rate limiting, protected authentication flows, and automated demo data maintenance.
 
-Demo accounts are provided for Employee, Manager, and Admin roles so you can explore different authorization levels.
+Demo accounts are provided for Employee and Manager roles so you can explore different authorization levels.
 `,
     )
     .setVersion('1.0')

@@ -1,114 +1,489 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# CRM API — NestJS
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A backend Customer Relationship Management (CRM) API built with **NestJS, TypeScript, PostgreSQL, and Prisma**.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The project focuses on a production-oriented backend architecture: authentication, authorization, validation, relational data modeling, automated testing, API documentation, and continuous integration.
 
-## Description
+## 🚀 Live Demo
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+**Swagger API documentation:**
+`https://crm-api-nestjs.onrender.com/docs`
 
-## Project setup
+The live API can be explored and tested directly through Swagger UI.
 
-```bash
-$ npm install
+> The API is deployed on Render and uses a dedicated production PostgreSQL database (Neon).
+
+---
+
+## 📌 Project Overview
+
+This project is a REST API for managing core CRM data and workflows.
+
+The API provides functionality for:
+
+* user authentication
+* role-based authorization
+* companies
+* contacts
+* tasks
+* deals
+* relational data between CRM entities
+* input validation
+* centralized error handling
+* API documentation with Swagger
+* automated unit and E2E testing
+* automated CI with GitHub Actions
+* production deployment through Render
+
+
+---
+
+## ✨ Features
+
+### Authentication
+
+* User registration
+* User login
+* JWT-based authentication (access + refresh tokens)
+* Refresh-token rotation with reuse detection and automatic session revocation
+* Password hashing with bcrypt
+* Protected API endpoints
+* Logout / session invalidation
+* Centralized authentication error handling
+
+### Authorization
+
+The application supports multiple user roles:
+
+* `ADMIN`
+* `MANAGER`
+* `EMPLOYEE`
+
+Authorization is enforced at the route level based on role.
+
+---
+
+### Companies
+
+Companies are central CRM entities and can be associated with:
+
+* contacts
+* tasks
+* deals
+
+The API supports creating, retrieving, updating, and deleting company data, as well as querying company collections.
+
+---
+
+### Contacts
+
+Contacts belong to companies and contain contact-related information.
+
+The API supports:
+
+* creating contacts
+* retrieving contacts
+* updating contacts
+* deleting contacts
+* filtering contacts
+* company/contact relationships
+
+---
+
+### Tasks
+
+Tasks can be associated with users and, optionally, companies.
+
+Tasks support:
+
+* status
+* priority
+* assignment
+* task filtering
+* updating task state
+
+Available task statuses include:
+
+* `TODO`
+* `IN_PROGRESS`
+* `DONE`
+
+Available priorities include:
+
+* `LOW`
+* `MEDIUM`
+* `HIGH`
+
+---
+
+### Deals
+
+Deals represent sales opportunities associated with a company and an assigned user.
+
+The application supports:
+
+* creating deals
+* retrieving deals
+* updating deals
+* deleting deals
+* assigning deals to users
+* associating deals with companies
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+
+* **Node.js**
+* **TypeScript**
+* **NestJS**
+
+### Database
+
+* **PostgreSQL**
+* **Prisma 8** (contract-based workflow)
+
+### Authentication & Security
+
+* **JWT**
+* **bcrypt**
+* **NestJS Throttler** (rate limiting on auth endpoints)
+
+### API Documentation
+
+* **Swagger**
+
+### Testing
+
+* **Vitest**
+* **Supertest**
+
+### Development & Deployment
+
+* **GitHub Actions**
+* **Render**
+* **Neon PostgreSQL**
+
+---
+
+## 🏗️ Architecture
+
+The application follows NestJS modular architecture, organized around domain-related modules rather than a single application layer.
+
+```text
+src/
+├── app.module.ts
+├── main.ts
+├── auth/
+├── common/
+├── companies/
+├── contacts/
+├── deals/
+├── internal/
+├── prisma/
+├── stats/
+├── tasks/
+└── users/
+
+test/
+├── auth.e2e-spec.ts
+├── authorization.e2e-spec.ts
+├── rate-limiting.e2e-spec.ts
+├── resources.e2e-spec.ts
+├── stats.e2e-spec.ts
+└── validation.e2e-spec.ts
 ```
 
-## Compile and run the project
+Each feature module is responsible for its own controllers, services, DTOs, and related business logic — keeping the application modular and easier to test and extend.
 
-```bash
-# development
-$ npm run start
+---
 
-# watch mode
-$ npm run start:dev
+## 🔐 Authentication
 
-# production mode
-$ npm run start:prod
+Authentication uses JWT access tokens backed by a database-tracked session.
+
+### Register
+
+```http
+POST /auth/register
 ```
 
-## Run tests
+Creates a new user account.
 
-```bash
-# unit tests
-$ npm run test
+### Login
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```http
+POST /auth/login
 ```
 
-## Deployment
+Authenticates the user and returns an access token, with a refresh token set as an HTTP-only cookie.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Refresh
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```http
+POST /auth/refresh
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Rotates the refresh token and issues a new access token. Reused or invalid refresh tokens revoke the associated session.
 
-## Observability
+### Logout
 
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
+```http
+POST /auth/logout
+```
 
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
+Invalidates the current session.
 
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
+Protected endpoints require:
 
-## Resources
+```http
+Authorization: Bearer <token>
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Swagger UI is configured to support JWT authentication, allowing protected endpoints to be tested directly from the live API documentation.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observer](https://observer.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+## 👥 Roles & Authorization
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Role       | Purpose                                 |
+| ---------- | --------------------------------------- |
+| `ADMIN`    | Administrative access                   |
+| `MANAGER`  | Management and team-level access        |
+| `EMPLOYEE` | Restricted access to assigned resources |
 
-## Stay in touch
+Authorization is handled via role checks applied at the route level.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
-## License
+## 🗄️ Database
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+The application uses **PostgreSQL** as its relational database, accessed through **Prisma 8's contract-based workflow** rather than a traditional `schema.prisma` file.
+
+The contract is located at:
+
+```text
+src/prisma/contract.prisma
+```
+
+---
+
+## 📖 API Documentation
+
+Once the application is running locally, Swagger UI is available at:
+
+```text
+http://localhost:3000/docs
+```
+
+The production Swagger URL is listed at the top of this README.
+
+Swagger provides available endpoints, request/response schemas, validation requirements, and built-in JWT authentication support.
+
+After logging in via `/auth/login`, the token can be entered into Swagger's **Authorize** dialog to test protected endpoints.
+
+---
+
+## 🧪 Testing
+
+The project uses **Vitest** for automated testing.
+
+### Unit tests
+
+```bash
+npm test
+```
+
+### E2E tests
+
+```bash
+npm run test:e2e
+```
+
+E2E tests run against a dedicated test database loaded from `.env.test` and verify the API through real HTTP requests, covering registration, validation, login, protected routes, refresh/logout behavior, and authorization.
+
+### Build
+
+```bash
+npm run build
+```
+
+---
+
+## 🔄 Continuous Integration
+
+GitHub Actions runs on every push and pull request targeting `main`:
+
+```text
+Install dependencies
+        ↓
+Unit tests
+        ↓
+E2E tests
+        ↓
+Production build
+```
+
+CI uses a dedicated test database configured through GitHub Actions secrets.
+
+---
+
+## 🚀 Deployment
+
+The API is deployed to **Render**, with Render automatically deploying changes pushed to `main`.
+
+```text
+Git push
+   │
+   ├──→ GitHub Actions
+   │       ├── npm ci
+   │       ├── unit tests
+   │       ├── E2E tests
+   │       └── build
+   │
+   └──→ Render
+           └── production deployment
+```
+
+Uptime is maintained via scheduled external health checks, and the production database is kept fully separate from the database used by CI/E2E tests.
+
+---
+
+## ⚙️ Local Development
+
+### Requirements
+
+* Node.js 24 (recommended)
+* npm
+* PostgreSQL (or Docker Compose)
+* Git
+
+### Clone the repository
+
+```bash
+git clone https://github.com/HannaRembiasz/crm-api-nestjs.git
+```
+
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Environment variables
+
+Create a `.env` file with the required environment variables:
+
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/crm_db"
+JWT_SECRET="replace_with_a_strong_secret"
+MAINTAIN_DB_SECRET="replace_with_a_secure_internal_secret"
+```
+
+Do not commit real secrets to the repository.
+
+### Start PostgreSQL locally (optional, via Docker)
+
+```bash
+docker compose up -d postgres
+```
+
+### Apply the Prisma contract to your database
+
+```bash
+npm run contract:emit
+npx prisma db init --db "$DATABASE_URL"
+```
+
+### Seed base accounts
+
+```bash
+npm run seed
+```
+
+---
+
+## ▶️ Running the Application
+
+### Development
+
+```bash
+npm run start:dev
+```
+
+### Production
+
+```bash
+npm run build
+npm run start:prod
+```
+
+The API is available at `http://localhost:3000`, with Swagger at `http://localhost:3000/docs`.
+
+---
+
+## 🌱 Demo Data
+
+The production deployment includes seeded demo data so the API can be explored without creating a dataset manually.
+
+### Demo accounts
+
+> Manager and employee demo accounts can be used to explore role-restricted behavior.
+
+```text
+Manager:
+Email: [DEMO_MANAGER_EMAIL]
+Password: [DEMO_MANAGER_PASSWORD]
+
+Employee:
+Email: [DEMO_EMPLOYEE_EMAIL]
+Password: [DEMO_EMPLOYEE_PASSWORD]
+```
+
+---
+
+## 🔒 Security Considerations
+
+* Secrets are supplied through environment variables and never committed to the repository
+* Production and test/CI databases are fully separated
+* Passwords are hashed with bcrypt
+* Refresh tokens are single-use, rotated, and hashed at rest
+* Reused refresh tokens trigger automatic session revocation
+* Rate limiting is applied to authentication endpoints
+* Database constraint errors are normalized into consistent API responses rather than leaking raw database internals
+* Internal maintenance endpoints are secret-protected, excluded from Swagger, and not part of the public API surface
+
+
+---
+
+## 🎯 Project Goals
+
+This project was built to demonstrate practical backend development skills with a modern Node.js stack:
+
+* structuring a modular NestJS application
+* working with relational data and PostgreSQL
+* implementing authentication and authorization, including refresh-token rotation
+* handling validation and database errors centrally
+* writing unit and E2E tests
+* documenting an API with Swagger
+* separating test and production environments
+* implementing CI
+* deploying and maintaining a live API on a free-tier host
+
+---
+
+
+## 👩‍💻 Author
+
+**Hanna Rembiasz**
+
+GitHub: https://github.com/HannaRembiasz
+
+Repository: https://github.com/HannaRembiasz/crm-api-nestjs
+
+---
+
+## 📄 License
+
+This project is currently intended as a portfolio and learning project.
