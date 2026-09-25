@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateUserDto, UserRole } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserQueryDto } from './dto/user-query.dto.js';
+import { userInfo } from 'os';
 
 @Injectable()
 export class UsersService {
@@ -95,7 +96,7 @@ export class UsersService {
       password: hashedPassword,
     });
 
-    const { password, ...safeUser } = newUser;
+    const { password, isProtected, ...safeUser } = newUser;
 
     return safeUser;
   }
@@ -103,13 +104,27 @@ export class UsersService {
   async updateUser(id: number, dto: UpdateUserDto) {
     const user = await this.prisma.client.orm.public.User.where({
       id: id,
-    }).update(dto);
+    }).first();
 
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
 
-    const { password, ...safeUser } = user;
+    console.log("User", user);
+
+    if (user.isProtected) {
+      throw new ForbiddenException(`You cannot update a protected user`);
+    }
+
+    const updatedUser = await this.prisma.client.orm.public.User.where({
+      id: id,
+    }).update(dto);
+
+    if (!updatedUser) {
+      throw new NotFoundException(`User not found`);
+    }
+
+    const { password, isProtected, ...safeUser } = updatedUser;
 
     return safeUser;
   }
@@ -117,11 +132,19 @@ export class UsersService {
   async deleteUser(id: number) {
     const user = await this.prisma.client.orm.public.User.where({
       id: id,
-    }).delete();
+    }).first();
 
     if (!user) {
       throw new NotFoundException(`User not found`);
     }
+
+    if (user.isProtected) {
+      throw new ForbiddenException(`You cannot delete a protected user`);
+    }
+
+    await this.prisma.client.orm.public.User.where({
+      id: id,
+    }).delete();
 
     return;
   }

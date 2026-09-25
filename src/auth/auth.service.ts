@@ -40,7 +40,7 @@ export class AuthService {
       role: UserRole.EMPLOYEE,
     });
 
-    const { password, ...safeUser } = newUser;
+    const { password, isProtected, ...safeUser } = newUser;
 
     return safeUser;
   }

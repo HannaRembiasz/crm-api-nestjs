@@ -12,6 +12,7 @@ model User {
   password  String
   name      String?
   role      UserRole
+  isProtected Boolean @default(false)
 
   tasks Task[]
   deals Deal[]

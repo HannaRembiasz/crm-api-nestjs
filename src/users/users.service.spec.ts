@@ -292,6 +292,7 @@ describe('UsersService', () => {
       email: 'john@example.com',
       password: 'hashed-password',
       role: UserRole.EMPLOYEE,
+      isProtected: false,
     });
 
     const result = await service.createUser({
@@ -328,12 +329,18 @@ describe('UsersService', () => {
   // updateUser
 
   it('should update an existing user and hide the password', async () => {
+    prismaMock.client.orm.public.User.first.mockResolvedValue({
+      id: 1,
+      isProtected: false,
+    });
+
     prismaMock.client.orm.public.User.update.mockResolvedValue({
       id: 1,
       name: 'Updated John',
       email: 'john@example.com',
       password: 'hashed-password',
       role: UserRole.MANAGER,
+      isProtected: false,
     });
 
     const result = await service.updateUser(1, {
@@ -360,8 +367,25 @@ describe('UsersService', () => {
     });
   });
 
+  it('should not update a protected user', async () => {
+    prismaMock.client.orm.public.User.first.mockResolvedValue({
+      id: 1,
+      isProtected: true,
+    });
+
+    await expect(
+      service.updateUser(1, {
+        name: 'Updated',
+      }),
+    ).rejects.toThrow(ForbiddenException);
+
+    expect(
+      prismaMock.client.orm.public.User.update,
+    ).not.toHaveBeenCalled();
+  });
+
   it('should throw NotFoundException when updating a nonexistent user', async () => {
-    prismaMock.client.orm.public.User.update.mockResolvedValue(
+    prismaMock.client.orm.public.User.first.mockResolvedValue(
       undefined,
     );
 
@@ -370,11 +394,20 @@ describe('UsersService', () => {
         name: 'Updated',
       }),
     ).rejects.toThrow(NotFoundException);
+
+    expect(
+      prismaMock.client.orm.public.User.update,
+    ).not.toHaveBeenCalled();
   });
 
   // deleteUser
 
   it('should delete an existing user', async () => {
+    prismaMock.client.orm.public.User.first.mockResolvedValue({
+      id: 1,
+      isProtected: false,
+    });
+
     prismaMock.client.orm.public.User.delete.mockResolvedValue({
       id: 1,
     });
@@ -392,13 +425,34 @@ describe('UsersService', () => {
     ).toHaveBeenCalled();
   });
 
+  it('should not delete a protected user', async () => {
+    prismaMock.client.orm.public.User.first.mockResolvedValue({
+      id: 1,
+      isProtected: true,
+    });
+
+    await expect(
+      service.deleteUser(1),
+    ).rejects.toThrow(ForbiddenException);
+
+    expect(
+      prismaMock.client.orm.public.User.delete,
+    ).not.toHaveBeenCalled();
+  });
+
   it('should throw NotFoundException when deleting a nonexistent user', async () => {
-    prismaMock.client.orm.public.User.delete.mockResolvedValue(
+    prismaMock.client.orm.public.User.first.mockResolvedValue(
       undefined,
     );
 
     await expect(
       service.deleteUser(999),
     ).rejects.toThrow(NotFoundException);
+
+    expect(
+      prismaMock.client.orm.public.User.delete,
+    ).not.toHaveBeenCalled();
   });
 });
+
+

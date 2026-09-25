@@ -27,6 +27,8 @@ export class UserResponseDto {
   })
   role: UserRole;
 
+  isProtected: boolean;
+
   @ApiProperty({
     example: '2026-09-14 12:19:31.891653+00',
     description: 'User creation timestamp.',
