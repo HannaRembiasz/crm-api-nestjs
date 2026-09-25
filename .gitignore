@@ -26,3 +26,8 @@ node_modules/
 dist/
 
 *.tsbuildinfo
+
+.agents/
+.claude/
+.cursor/
+.devin/
