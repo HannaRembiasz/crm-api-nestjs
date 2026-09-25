@@ -6,17 +6,15 @@ import { JwtService } from '@nestjs/jwt';
 
 import { AppModule } from '../src/app.module.js';
 import { DbExceptionFilter } from '../src/common/filters/db-exception.filter.js';
-import { UserRole } from '../src/users/dto/create-user.dto.js';
 
 describe('Resources (e2e)', () => {
   let app: INestApplication<App>;
   let jwtService: JwtService;
 
   beforeAll(async () => {
-    const moduleFixture: TestingModule =
-      await Test.createTestingModule({
-        imports: [AppModule],
-      }).compile();
+    const moduleFixture: TestingModule = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile();
 
     app = moduleFixture.createNestApplication();
 
@@ -39,12 +37,15 @@ describe('Resources (e2e)', () => {
   });
 
   it('creates related resources and returns them in company overview', async () => {
-    const adminToken = await jwtService.signAsync({
-      sub: 1,
-      sid: 1,
-      email: 'resources-admin@example.com',
-      role: UserRole.ADMIN,
-    });
+    const adminLogin = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'admin@mail.com',
+        password: 'admin.password',
+      })
+      .expect(201);
+
+    const adminToken = adminLogin.body.access_token;
 
     const employeeResponse = await request(app.getHttpServer())
       .post('/auth/register')
@@ -108,22 +109,19 @@ describe('Resources (e2e)', () => {
 
     expect(
       overviewResponse.body.contacts.some(
-        (contact: { id: number }) =>
-          contact.id === contactResponse.body.id,
+        (contact: { id: number }) => contact.id === contactResponse.body.id,
       ),
     ).toBe(true);
 
     expect(
       overviewResponse.body.tasks.some(
-        (task: { id: number }) =>
-          task.id === taskResponse.body.id,
+        (task: { id: number }) => task.id === taskResponse.body.id,
       ),
     ).toBe(true);
 
     expect(
       overviewResponse.body.deals.some(
-        (deal: { id: number }) =>
-          deal.id === dealResponse.body.id,
+        (deal: { id: number }) => deal.id === dealResponse.body.id,
       ),
     ).toBe(true);
   });

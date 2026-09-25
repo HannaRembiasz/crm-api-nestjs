@@ -41,12 +41,15 @@ describe('Stats (e2e)', () => {
     const today = new Date().toISOString().slice(0, 10);
     const futureDate = '2099-01-01';
 
-    const adminToken = await jwtService.signAsync({
-      sub: 1,
-      sid: 1,
-      email: 'stats-admin@example.com',
-      role: UserRole.ADMIN,
-    });
+    const adminLogin = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'admin@mail.com',
+        password: 'admin.password',
+      })
+      .expect(201);
+
+    const adminToken = adminLogin.body.access_token;
 
     const employeeResponse = await request(app.getHttpServer())
       .post('/auth/register')
@@ -103,12 +106,15 @@ describe('Stats (e2e)', () => {
     const today = new Date().toISOString().slice(0, 10);
     const futureDate = '2099-01-01';
 
-    const adminToken = await jwtService.signAsync({
-      sub: 1,
-      sid: 1,
-      email: 'stats-admin@example.com',
-      role: UserRole.ADMIN,
-    });
+    const adminLogin = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: 'admin@mail.com',
+        password: 'admin.password',
+      })
+      .expect(201);
+
+    const adminToken = adminLogin.body.access_token;
 
     const employeeResponse = await request(app.getHttpServer())
       .post('/auth/register')
