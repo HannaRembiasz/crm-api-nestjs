@@ -10,6 +10,7 @@ import { UsersModule } from './users/users.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { StatsModule } from './stats/stats.module.js';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { InternalModule } from './internal/internal.module.js';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     UsersModule,
     AuthModule,
     StatsModule,
+    InternalModule,
   ],
   controllers: [AppController],
   providers: [AppService],
