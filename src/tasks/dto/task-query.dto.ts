@@ -17,7 +17,6 @@ import { IsAfterOrEqual } from '../../common/validation/is-after-or-equal.decora
 
 export class TaskQueryDto {
   @ApiPropertyOptional({
-    example: 'Call',
     description: 'Filter tasks by title.',
   })
   @IsString()
@@ -26,7 +25,6 @@ export class TaskQueryDto {
 
   @ApiPropertyOptional({
     enum: TaskStatus,
-    example: TaskStatus.TODO,
   })
   @IsEnum(TaskStatus)
   @IsOptional()
@@ -34,14 +32,12 @@ export class TaskQueryDto {
 
   @ApiPropertyOptional({
     enum: TaskPriority,
-    example: TaskPriority.HIGH,
   })
   @IsEnum(TaskPriority)
   @IsOptional()
   priority?: TaskPriority;
 
   @ApiPropertyOptional({
-    example: '2026-09-01T00:00:00.000Z',
     description: 'Return tasks due on or after this date.',
   })
   @IsDateString()
@@ -49,7 +45,6 @@ export class TaskQueryDto {
   dueAfter?: string;
 
   @ApiPropertyOptional({
-    example: '2026-09-30T23:59:59.999Z',
     description:
       'Return tasks due on or before this date. Must be greater than or equal to dueAfter.',
   })
@@ -61,7 +56,6 @@ export class TaskQueryDto {
   dueBefore?: string;
 
   @ApiPropertyOptional({
-    example: 1,
     description: 'Filter tasks by company ID.',
   })
   @IsOptional()
@@ -70,7 +64,6 @@ export class TaskQueryDto {
   companyId?: number;
 
   @ApiPropertyOptional({
-    example: 7,
     description: 'Filter tasks by assigned user ID.',
   })
   @IsOptional()

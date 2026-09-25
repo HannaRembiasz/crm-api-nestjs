@@ -5,7 +5,6 @@ import { IsAfterOrEqual } from '../../common/validation/is-after-or-equal.decora
 
 export class StatsQueryDto {
   @ApiPropertyOptional({
-    example: '2026-09-01',
     description: 'Include statistics from this date.',
   })
   @IsDateString()
@@ -13,7 +12,6 @@ export class StatsQueryDto {
   from?: string;
 
   @ApiPropertyOptional({
-    example: '2026-09-30',
     description:
       'Include statistics up to and including this date. Must be greater than or equal to from.',
   })

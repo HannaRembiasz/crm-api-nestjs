@@ -11,7 +11,6 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CompanyQueryDto {
   @ApiPropertyOptional({
-    example: 'Company',
     description: 'Filter companies by name.',
   })
   @IsString()
@@ -19,7 +18,6 @@ export class CompanyQueryDto {
   name?: string;
 
   @ApiPropertyOptional({
-    example: 'Warsaw',
     description: 'Filter companies by city.',
   })
   @IsString()
@@ -27,7 +25,6 @@ export class CompanyQueryDto {
   city?: string;
 
   @ApiPropertyOptional({
-    example: 'Poland',
     description: 'Filter companies by country.',
   })
   @IsString()

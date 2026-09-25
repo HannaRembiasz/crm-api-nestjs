@@ -15,7 +15,6 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class DealQueryDto {
   @ApiPropertyOptional({
-    example: 'Website',
     description: 'Filter deals by title.',
   })
   @IsString()
@@ -24,7 +23,6 @@ export class DealQueryDto {
 
   @ApiPropertyOptional({
     enum: DealStatus,
-    example: DealStatus.NEGOTIATION,
     description: 'Filter deals by status.',
   })
   @IsEnum(DealStatus)
@@ -32,7 +30,6 @@ export class DealQueryDto {
   status?: DealStatus;
 
   @ApiPropertyOptional({
-    example: 1,
     description: 'Filter deals by company ID.',
   })
   @IsOptional()
@@ -41,7 +38,6 @@ export class DealQueryDto {
   companyId?: number;
 
   @ApiPropertyOptional({
-    example: 7,
     description: 'Filter deals by assigned user ID.',
   })
   @IsOptional()

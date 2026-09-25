@@ -4,7 +4,6 @@ import { IsString, IsOptional, IsInt, Min, Max, IsIn } from 'class-validator';
 
 export class ContactQueryDto {
   @ApiPropertyOptional({
-    example: 'John',
     description: 'Filter contacts by first name.',
   })
   @IsString()
@@ -12,7 +11,6 @@ export class ContactQueryDto {
   firstName?: string;
 
   @ApiPropertyOptional({
-    example: 'Smith',
     description: 'Filter contacts by last name.',
   })
   @IsString()
@@ -20,7 +18,6 @@ export class ContactQueryDto {
   lastName?: string;
 
   @ApiPropertyOptional({
-    example: 'john.smith@example.com',
     description: 'Filter contacts by email address.',
   })
   @IsString()
@@ -28,7 +25,6 @@ export class ContactQueryDto {
   email?: string;
 
   @ApiPropertyOptional({
-    example: 1,
     description: 'Filter contacts by company ID.',
   })
   @Type(() => Number)
