@@ -6,7 +6,7 @@ import { UserRole } from './create-user.dto.js';
 
 export class UserQueryDto {
   @ApiPropertyOptional({
-    example: 'Hanna',
+    example: 'User',
     description: 'Filter users by name.',
   })
   @IsOptional()
@@ -14,7 +14,7 @@ export class UserQueryDto {
   name?: string;
 
   @ApiPropertyOptional({
-    example: 'hanna@example.com',
+    example: 'user@example.com',
     description: 'Filter users by email address.',
   })
   @IsOptional()

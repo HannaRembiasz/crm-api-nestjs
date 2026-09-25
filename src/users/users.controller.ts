@@ -80,7 +80,7 @@ export class UsersController {
   @ApiParam({
     name: 'id',
     description: 'User identifier.',
-    example: 7,
+    example: 1,
   })
   @ApiOkResponse({
     description: 'User found successfully.',
@@ -112,7 +112,7 @@ export class UsersController {
   @ApiParam({
     name: 'id',
     description: 'User identifier.',
-    example: 7,
+    example: 1,
   })
   @ApiOkResponse({
     description: 'User deals returned successfully.',
@@ -154,7 +154,7 @@ export class UsersController {
   @ApiParam({
     name: 'id',
     description: 'User identifier.',
-    example: 7,
+    example: 1,
   })
   @ApiOkResponse({
     description: 'User tasks returned successfully.',

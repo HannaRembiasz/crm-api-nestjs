@@ -12,7 +12,7 @@ import { UserRole } from './create-user.dto.js';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({
-    example: 'Hanna',
+    example: 'New User',
     description: 'User name.',
   })
   @IsOptional()
@@ -21,7 +21,7 @@ export class UpdateUserDto {
   name?: string;
 
   @ApiPropertyOptional({
-    example: 'hanna@example.com',
+    example: 'newuser@example.com',
     description: 'User email address.',
   })
   @IsOptional()

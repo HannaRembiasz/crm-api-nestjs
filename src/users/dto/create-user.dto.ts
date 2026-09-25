@@ -16,7 +16,7 @@ export enum UserRole {
 
 export class CreateUserDto {
   @ApiPropertyOptional({
-    example: 'Hanna',
+    example: 'User',
     description: 'User name.',
   })
   @IsOptional()
@@ -25,7 +25,7 @@ export class CreateUserDto {
   name?: string;
 
   @ApiProperty({
-    example: 'hanna@example.com',
+    example: 'user@example.com',
     description: 'User email address.',
   })
   @IsEmail()
@@ -33,7 +33,7 @@ export class CreateUserDto {
   email: string;
 
   @ApiProperty({
-    example: 'Password123!',
+    example: 'user.password',
     description: 'User password.',
     writeOnly: true,
   })

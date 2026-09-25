@@ -19,6 +19,7 @@ import {
   ApiOkResponse,
   ApiOperation,
   ApiTags,
+  ApiBody,
   ApiTooManyRequestsResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -103,6 +104,32 @@ export class AuthController {
     description:
       'Authenticates a user and returns a JWT access token. A refresh token is stored in an HttpOnly cookie. Limited to 5 requests per minute.',
   })
+  @ApiBody({
+  description: 'Login with one of the demo accounts below.',
+  examples: {
+    employee: {
+      summary: 'Employee',
+      value: {
+        email: 'employee@mail.com',
+        password: 'employee.password',
+      },
+    },
+    manager: {
+      summary: 'Manager',
+      value: {
+        email: 'manager@mail.com',
+        password: 'manager.password',
+      },
+    },
+    admin: {
+      summary: 'Admin',
+      value: {
+        email: 'admin@mail.com',
+        password: 'admin.password',
+      },
+    },
+  },
+})
   @ApiCreatedResponse({
     description:
       'Login successful. The access token is returned and the refresh token is stored in an HttpOnly cookie.',
