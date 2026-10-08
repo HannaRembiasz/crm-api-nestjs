@@ -1,133 +1,81 @@
 # CRM API — NestJS
 
-A backend Customer Relationship Management (CRM) API built with **NestJS, TypeScript, PostgreSQL, and Prisma**.
+A REST API for managing CRM data and workflows, built with **NestJS, TypeScript, PostgreSQL, and Prisma**.
 
-The project focuses on a production-oriented backend architecture: authentication, authorization, validation, relational data modeling, automated testing, API documentation, and continuous integration.
+The project includes JWT authentication with refresh-token rotation, role-based authorization, relational data modeling, input validation, and centralized error handling. It also features automated unit and E2E tests, Swagger documentation, and a CI pipeline.
+
+---
 
 ## 🚀 Live Demo
 
-**Swagger API documentation:**
-[crm-api-nestjs.onrender.com/docs](https://crm-api-nestjs.onrender.com/docs)
+**[Explore the API in Swagger UI](https://crm-api-nestjs.onrender.com/docs)**
 
-The live API can be explored and tested directly through Swagger UI.
+The API is deployed on Render and connected to a separate production PostgreSQL database hosted on Neon.
 
-> The API is deployed on Render and uses a dedicated production PostgreSQL database (Neon).
+Demo accounts are available for testing role-based access. See the **Demo Data** section below for credentials and instructions.
+
+### Quick Demo
+
+1. Open the [Swagger UI](https://crm-api-nestjs.onrender.com/docs).
+2. Find `POST /auth/login` and log in using one of the demo accounts listed in the **Demo Data** section below.
+3. Copy the access token from the login response.
+4. Click **Authorize** in Swagger UI and enter the token.
+5. Explore the protected endpoints for companies, contacts, tasks, and deals.
+
+> The first request may take longer if the Render instance has been inactive.
 
 ---
 
 ## 📌 Project Overview
 
-This project is a REST API for managing core CRM data and workflows.
+The API supports core CRM operations involving:
 
-The API provides functionality for:
+- **Companies** — managing company records and related entities
+- **Contacts** — storing and filtering company contacts
+- **Tasks** — assigning work, setting priorities, and tracking progress
+- **Deals** — managing sales opportunities and user assignments
+- **Users and roles** — controlling access through `ADMIN`, `MANAGER`, and `EMPLOYEE` roles
 
-* user authentication
-* role-based authorization
-* companies
-* contacts
-* tasks
-* deals
-* relational data between CRM entities
-* input validation
-* centralized error handling
-* API documentation with Swagger
-* automated unit and E2E testing
-* automated CI with GitHub Actions
-* production deployment through Render
-
+The application follows NestJS's modular structure, with separate modules for individual business domains.
 
 ---
 
 ## ✨ Features
 
-### Authentication
+### Authentication & Authorization
 
-* User registration
-* User login
-* JWT-based authentication (access + refresh tokens)
-* Refresh-token rotation with reuse detection and automatic session revocation
-* Password hashing with bcrypt
-* Protected API endpoints
-* Logout / session invalidation
-* Centralized authentication error handling
-
-### Authorization
-
-The application supports multiple user roles:
-
-* `ADMIN`
-* `MANAGER`
-* `EMPLOYEE`
-
-Authorization is enforced at the route level based on role.
-
----
+- User registration and login
+- JWT authentication with access and refresh tokens
+- Refresh-token rotation with reuse detection and session revocation
+- Role-based access control (`ADMIN`, `MANAGER`, `EMPLOYEE`)
+- Protected endpoints and logout
+- Password hashing with bcrypt
 
 ### Companies
 
-Companies are central CRM entities and can be associated with:
-
-* contacts
-* tasks
-* deals
-
-The API supports creating, retrieving, updating, and deleting company data, as well as querying company collections.
-
----
+- Create, retrieve, update, and delete company records
+- Query company collections
+- Manage relationships with contacts, tasks, and deals
 
 ### Contacts
 
-Contacts belong to companies and contain contact-related information.
-
-The API supports:
-
-* creating contacts
-* retrieving contacts
-* updating contacts
-* deleting contacts
-* filtering contacts
-* company/contact relationships
-
----
+- Create, retrieve, update, and delete contacts
+- Filter contacts
+- Associate contacts with companies
 
 ### Tasks
 
-Tasks can be associated with users and, optionally, companies.
-
-Tasks support:
-
-* status
-* priority
-* assignment
-* task filtering
-* updating task state
-
-Available task statuses include:
-
-* `TODO`
-* `IN_PROGRESS`
-* `DONE`
-
-Available priorities include:
-
-* `LOW`
-* `MEDIUM`
-* `HIGH`
-
----
+- Create and manage tasks assigned to users
+- Associate tasks with companies
+- Filter tasks and update their status
+- Set task priorities (`LOW`, `MEDIUM`, `HIGH`)
+- Track task statuses (`TODO`, `IN_PROGRESS`, `DONE`)
 
 ### Deals
 
-Deals represent sales opportunities associated with a company and an assigned user.
-
-The application supports:
-
-* creating deals
-* retrieving deals
-* updating deals
-* deleting deals
-* assigning deals to users
-* associating deals with companies
+- Create, retrieve, update, and delete deals
+- Assign deals to users
+- Associate deals with companies
 
 ---
 
@@ -135,41 +83,41 @@ The application supports:
 
 ### Backend
 
-* **Node.js**
-* **TypeScript**
-* **NestJS**
+- **Node.js**
+- **TypeScript**
+- **NestJS**
 
 ### Database
 
-* **PostgreSQL**
-* **Prisma 8** (contract-based workflow)
+- **PostgreSQL**
+- **Prisma 8** (contract-based workflow)
 
 ### Authentication & Security
 
-* **JWT**
-* **bcrypt**
-* **NestJS Throttler** (rate limiting on auth endpoints)
+- **JWT**
+- **bcrypt**
+- **NestJS Throttler** (rate limiting on auth endpoints)
 
 ### API Documentation
 
-* **Swagger**
+- **Swagger**
 
 ### Testing
 
-* **Vitest**
-* **Supertest**
+- **Vitest**
+- **Supertest**
 
 ### Development & Deployment
 
-* **GitHub Actions**
-* **Render**
-* **Neon PostgreSQL**
+- **GitHub Actions**
+- **Render**
+- **Neon PostgreSQL**
 
 ---
 
 ## 🏗️ Architecture
 
-The application follows NestJS modular architecture, organized around domain-related modules rather than a single application layer.
+The application is organized into domain-specific NestJS modules:
 
 ```text
 src/
@@ -247,10 +195,10 @@ Swagger UI is configured to support JWT authentication, allowing protected endpo
 
 ## 👥 Roles & Authorization
 
-| Role       | Purpose                                 |
-| ---------- | --------------------------------------- |
-| `ADMIN`    | Administrative access                   |
-| `MANAGER`  | Management and team-level access        |
+| Role | Purpose |
+| --- | --- |
+| `ADMIN` | Administrative access |
+| `MANAGER` | Management and team-level access |
 | `EMPLOYEE` | Restricted access to assigned resources |
 
 Authorization is handled via role checks applied at the route level.
@@ -313,17 +261,14 @@ npm run build
 
 ## 🔄 Continuous Integration
 
-GitHub Actions runs on every push and pull request targeting `main`:
+GitHub Actions runs on every push and pull request targeting `main`.
 
-```text
-Install dependencies
-        ↓
-Unit tests
-        ↓
-E2E tests
-        ↓
-Production build
-```
+The CI pipeline:
+
+1. Installs dependencies with `npm ci`
+2. Runs unit tests
+3. Runs E2E tests
+4. Builds the application
 
 CI uses a dedicated test database configured through GitHub Actions secrets.
 
@@ -354,10 +299,10 @@ Uptime is maintained via scheduled external health checks, and the production da
 
 ### Requirements
 
-* Node.js 24 (recommended)
-* npm
-* PostgreSQL (or Docker Compose)
-* Git
+- Node.js 24 (recommended)
+- npm
+- PostgreSQL (or Docker Compose)
+- Git
 
 ### Clone the repository
 
@@ -432,58 +377,38 @@ The production deployment includes seeded demo data so the API can be explored w
 > Manager and employee demo accounts can be used to explore role-restricted behavior.
 
 ```text
-Manager:
+Employee:
 Email: employee@mail.com
 Password: employee.password
 
-Employee:
+Manager:
 Email: manager@mail.com
 Password: manager.password
 ```
+
+To test role-based access, log in with either account through `POST /auth/login`, copy the returned access token, and use Swagger's **Authorize** button to authenticate subsequent requests.
 
 ---
 
 ## 🔒 Security Considerations
 
-* Secrets are supplied through environment variables and never committed to the repository
-* Production and test/CI databases are fully separated
-* Passwords are hashed with bcrypt
-* Refresh tokens are single-use, rotated, and hashed at rest
-* Reused refresh tokens trigger automatic session revocation
-* Rate limiting is applied to authentication endpoints
-* Database constraint errors are normalized into consistent API responses rather than leaking raw database internals
-* Internal maintenance endpoints are secret-protected, excluded from Swagger, and not part of the public API surface
-
-
----
-
-## 🎯 Project Goals
-
-This project was built to demonstrate practical backend development skills with a modern Node.js stack:
-
-* structuring a modular NestJS application
-* working with relational data and PostgreSQL
-* implementing authentication and authorization, including refresh-token rotation
-* handling validation and database errors centrally
-* writing unit and E2E tests
-* documenting an API with Swagger
-* separating test and production environments
-* implementing CI
-* deploying and maintaining a live API on a free-tier host
+- Secrets are supplied through environment variables and never committed to the repository
+- Production and test/CI databases are fully separated
+- Passwords are hashed with bcrypt
+- Refresh tokens are single-use, rotated, and hashed at rest
+- Reused refresh tokens trigger automatic session revocation
+- Rate limiting is applied to authentication endpoints
+- Database constraint errors are normalized into consistent API responses rather than leaking raw database internals
+- Internal maintenance endpoints are secret-protected, excluded from Swagger, and not part of the public API surface
 
 ---
-
 
 ## 👩‍💻 Author
 
-**Hanna Rembiasz**
-
 GitHub: [Hanna Rembiasz Profile](https://github.com/HannaRembiasz)
-
-Repository: [CRM-API-NESTJS](https://github.com/HannaRembiasz/crm-api-nestjs)
 
 ---
 
 ## 📄 License
 
-This project is currently intended as a portfolio and learning project.
+No license has been specified for this repository.
